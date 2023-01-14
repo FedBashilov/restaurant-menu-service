@@ -39,7 +39,7 @@ namespace Web.Facade.Controllers
             }
             catch (NotFoundException)
             {
-                return this.NotFound($"Not found menuItem with id = {id} while executing GetMenuItem method");
+                return this.NotFound($"Can't get menu item. Not found menu item with id = {id}");
             }
         }
 
@@ -49,6 +49,21 @@ namespace Web.Facade.Controllers
         {
             var menuItem = this.menuService.CreateMenuItem(newItem);
             return this.StatusCode(201, menuItem);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult UpdateMenuItem([FromRoute] int id, [FromBody] MenuItem newItem)
+        {
+            try
+            {
+                var menuItem = this.menuService.UpdateMenuItem(id, newItem);
+                return this.Ok(menuItem);
+            }
+            catch (NotFoundException)
+            {
+                return this.NotFound($"Can't update menu item. Not found menu item with id = {id}");
+            }
         }
     }
 }

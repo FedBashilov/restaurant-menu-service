@@ -42,9 +42,19 @@ namespace Web.Facade.Services
             return menuItem;
         }
 
-        public void UpdateMenuItem(int id)
+        public MenuItem UpdateMenuItem(int id, MenuItem newItem)
         {
-            throw new NotImplementedException();
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            if (!dbContext.Menu.Any(x => x.Id == id))
+            {
+                throw new NotFoundException($"Not found menu item with id = {id}");
+            }
+
+            newItem.Id = id;
+            var menuItem = dbContext.Menu.Update(newItem).Entity;
+            dbContext.SaveChanges();
+
+            return menuItem;
         }
 
         public void DeleteMenuItem(int id)
