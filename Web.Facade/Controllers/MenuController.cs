@@ -4,10 +4,11 @@ namespace Web.Facade.Controllers
 {
     using System.Text.Json;
     using Microsoft.AspNetCore.Mvc;
+    using Web.Facade.Exceptions;
     using Web.Facade.Services;
 
     [Route("api/menu")]
-    public class MenuController : ControllerBase
+    public class MenuController : Controller
     {
         private readonly IMenuService menuService;
         private readonly ILogger<MenuController> logger;
@@ -20,17 +21,25 @@ namespace Web.Facade.Controllers
 
         [HttpGet]
         [Route("")]
-        public IActionResult GetAllDishes()
+        public IActionResult GetAllMenu()
         {
             var menu = this.menuService.GetAllMenu();
             return this.Ok(JsonSerializer.Serialize(menu));
         }
 
         [HttpGet]
-        [Route("{itemId}")]
-        public IActionResult GetDishById([FromRoute] int dishId)
+        [Route("{id}")]
+        public IActionResult GetMenuItem([FromRoute] int id)
         {
-            return this.Ok($"Get dish by id {dishId}");
+            try
+            {
+                var menuItem = this.menuService.GetMenuItem(id);
+                return this.Ok(JsonSerializer.Serialize(menuItem));
+            }
+            catch (NotFoundException)
+            {
+                return this.NotFound($"Not found menuItem with id = {id} while executing GetMenuItem method");
+            }
         }
     }
 }

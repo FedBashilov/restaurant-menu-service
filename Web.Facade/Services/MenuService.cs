@@ -3,6 +3,7 @@
 namespace Web.Facade.Services
 {
     using Microsoft.EntityFrameworkCore;
+    using Web.Facade.Exceptions;
     using Web.Facade.Models;
 
     public class MenuService : IMenuService
@@ -17,7 +18,34 @@ namespace Web.Facade.Services
         public List<MenuItem> GetAllMenu()
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
-            return dbContext.Menu.ToList<MenuItem>();
+            return dbContext.Menu.ToList();
+        }
+
+        public MenuItem GetMenuItem(int id)
+        {
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            var menuItem = dbContext.Menu.Find(id);
+            if (menuItem == null)
+            {
+                throw new NotFoundException($"Not found menuItem with id = {id} while executing GetMenuItem method");
+            }
+
+            return menuItem;
+        }
+
+        public void CreateMenuItem(MenuItem menuItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateMenuItem(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteMenuItem(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

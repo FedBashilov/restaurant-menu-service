@@ -7,5 +7,13 @@ namespace Web.Facade.Services
     public interface IMenuService
     {
         public List<MenuItem> GetAllMenu();
+
+        public MenuItem GetMenuItem(int id);
+
+        public void CreateMenuItem(MenuItem menuItem);
+
+        public void UpdateMenuItem(int id);
+
+        public void DeleteMenuItem(int id);
     }
 }
