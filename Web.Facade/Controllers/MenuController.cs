@@ -5,10 +5,11 @@ namespace Web.Facade.Controllers
     using System.Text.Json;
     using Microsoft.AspNetCore.Mvc;
     using Web.Facade.Exceptions;
+    using Web.Facade.Models;
     using Web.Facade.Services;
 
     [Route("api/menu")]
-    public class MenuController : Controller
+    public class MenuController : ControllerBase
     {
         private readonly IMenuService menuService;
         private readonly ILogger<MenuController> logger;
@@ -40,6 +41,14 @@ namespace Web.Facade.Controllers
             {
                 return this.NotFound($"Not found menuItem with id = {id} while executing GetMenuItem method");
             }
+        }
+
+        [HttpPost]
+        [Route("")]
+        public IActionResult CreateMenuItem([FromBody] MenuItem newItem)
+        {
+            var menuItem = this.menuService.CreateMenuItem(newItem);
+            return this.StatusCode(201, menuItem);
         }
     }
 }

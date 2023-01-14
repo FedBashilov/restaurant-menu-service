@@ -10,7 +10,7 @@ namespace Web.Facade.Services
 
         public MenuItem GetMenuItem(int id);
 
-        public void CreateMenuItem(MenuItem menuItem);
+        public MenuItem CreateMenuItem(MenuItem menuItem);
 
         public void UpdateMenuItem(int id);
 

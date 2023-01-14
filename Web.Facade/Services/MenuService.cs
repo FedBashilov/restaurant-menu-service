@@ -33,9 +33,13 @@ namespace Web.Facade.Services
             return menuItem;
         }
 
-        public void CreateMenuItem(MenuItem menuItem)
+        public MenuItem CreateMenuItem(MenuItem newItem)
         {
-            throw new NotImplementedException();
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            var menuItem = dbContext.Menu.Add(newItem).Entity;
+            dbContext.SaveChanges();
+
+            return menuItem;
         }
 
         public void UpdateMenuItem(int id)
