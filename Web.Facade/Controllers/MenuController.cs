@@ -65,5 +65,13 @@ namespace Web.Facade.Controllers
                 return this.NotFound($"Can't update menu item. Not found menu item with id = {id}");
             }
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult DeletetMenuItem([FromRoute] int id)
+        {
+            this.menuService.DeleteMenuItem(id);
+            return this.NoContent();
+        }
     }
 }

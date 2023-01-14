@@ -59,7 +59,14 @@ namespace Web.Facade.Services
 
         public void DeleteMenuItem(int id)
         {
-            throw new NotImplementedException();
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            var menuItem = dbContext.Menu.FirstOrDefault(x => x.Id == id);
+
+            if (menuItem != null)
+            {
+				dbContext.Remove(menuItem);
+				dbContext.SaveChanges();
+			}
         }
     }
 }
