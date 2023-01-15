@@ -25,7 +25,7 @@ namespace Web.Facade.Services
         public async Task<MenuItem> GetMenuItem(int id)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
-            var menuItem = await dbContext.Menu.FirstOrDefaultAsync();
+            var menuItem = await dbContext.Menu.FindAsync(id);
             if (menuItem == null)
             {
                 throw new NotFoundException($"Not found menuItem with id = {id} while executing GetMenuItem method");
