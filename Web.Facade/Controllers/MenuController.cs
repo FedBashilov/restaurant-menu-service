@@ -22,19 +22,19 @@ namespace Web.Facade.Controllers
 
         [HttpGet]
         [Route("")]
-        public IActionResult GetAllMenu()
+        public async Task<IActionResult> GetAllMenu()
         {
-            var menu = this.menuService.GetAllMenu();
+            var menu = await this.menuService.GetAllMenu();
             return this.Ok(JsonSerializer.Serialize(menu));
         }
 
         [HttpGet]
         [Route("{id}")]
-        public IActionResult GetMenuItem([FromRoute] int id)
+        public async Task<IActionResult> GetMenuItem([FromRoute] int id)
         {
             try
             {
-                var menuItem = this.menuService.GetMenuItem(id);
+                var menuItem = await this.menuService.GetMenuItem(id);
                 return this.Ok(JsonSerializer.Serialize(menuItem));
             }
             catch (NotFoundException)
@@ -45,19 +45,19 @@ namespace Web.Facade.Controllers
 
         [HttpPost]
         [Route("")]
-        public IActionResult CreateMenuItem([FromBody] MenuItem newItem)
+        public async Task<IActionResult> CreateMenuItem([FromBody] MenuItem newItem)
         {
-            var menuItem = this.menuService.CreateMenuItem(newItem);
+            var menuItem = await this.menuService.CreateMenuItem(newItem);
             return this.StatusCode(201, menuItem);
         }
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult UpdateMenuItem([FromRoute] int id, [FromBody] MenuItem newItem)
+        public async Task<IActionResult> UpdateMenuItem([FromRoute] int id, [FromBody] MenuItem newItem)
         {
             try
             {
-                var menuItem = this.menuService.UpdateMenuItem(id, newItem);
+                var menuItem = await this.menuService.UpdateMenuItem(id, newItem);
                 return this.Ok(menuItem);
             }
             catch (NotFoundException)
@@ -68,9 +68,9 @@ namespace Web.Facade.Controllers
 
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult DeletetMenuItem([FromRoute] int id)
+        public async Task<IActionResult> DeletetMenuItem([FromRoute] int id)
         {
-            this.menuService.DeleteMenuItem(id);
+            await this.menuService.DeleteMenuItem(id);
             return this.NoContent();
         }
     }

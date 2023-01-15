@@ -15,16 +15,16 @@ namespace Web.Facade.Services
             this.dbCxtFactory = dbCxtFactory;
         }
 
-        public List<MenuItem> GetAllMenu()
+        public async Task<List<MenuItem>> GetAllMenu()
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
-            return dbContext.Menu.ToList();
+            return await Task.FromResult(dbContext.Menu.ToList());
         }
 
-        public MenuItem GetMenuItem(int id)
+        public async Task<MenuItem> GetMenuItem(int id)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
-            var menuItem = dbContext.Menu.Find(id);
+            var menuItem = await dbContext.Menu.FirstOrDefaultAsync();
             if (menuItem == null)
             {
                 throw new NotFoundException($"Not found menuItem with id = {id} while executing GetMenuItem method");
@@ -33,16 +33,16 @@ namespace Web.Facade.Services
             return menuItem;
         }
 
-        public MenuItem CreateMenuItem(MenuItem newItem)
+        public async Task<MenuItem> CreateMenuItem(MenuItem newItem)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
             var menuItem = dbContext.Menu.Add(newItem).Entity;
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             return menuItem;
         }
 
-        public MenuItem UpdateMenuItem(int id, MenuItem newItem)
+        public async Task<MenuItem> UpdateMenuItem(int id, MenuItem newItem)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
             if (!dbContext.Menu.Any(x => x.Id == id))
@@ -52,21 +52,21 @@ namespace Web.Facade.Services
 
             newItem.Id = id;
             var menuItem = dbContext.Menu.Update(newItem).Entity;
-            dbContext.SaveChanges();
+            await dbContext.SaveChangesAsync();
 
             return menuItem;
         }
 
-        public void DeleteMenuItem(int id)
+        public async Task DeleteMenuItem(int id)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
             var menuItem = dbContext.Menu.FirstOrDefault(x => x.Id == id);
 
             if (menuItem != null)
             {
-				dbContext.Remove(menuItem);
-				dbContext.SaveChanges();
-			}
+                dbContext.Remove(menuItem);
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }
