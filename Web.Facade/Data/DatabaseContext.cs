@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Services
+namespace Web.Facade.Data
 {
     using Microsoft.EntityFrameworkCore;
     using Web.Facade.Models;
@@ -8,8 +8,8 @@ namespace Web.Facade.Services
     public class DatabaseContext : DbContext
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options)
-            : base(options) => this.Database.EnsureCreated();
+            : base(options) => Database.EnsureCreated();
 
-        public DbSet<MenuItem> Menu => this.Set<MenuItem>();
+        public DbSet<MenuItem> Menu => Set<MenuItem>();
     }
 }

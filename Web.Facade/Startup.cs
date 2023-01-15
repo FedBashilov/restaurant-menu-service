@@ -3,7 +3,8 @@
 namespace Web.Facade
 {
     using Microsoft.EntityFrameworkCore;
-    using Web.Facade.Services;
+    using Web.Facade.Data;
+    using Web.Facade.Extentions;
 
     public class Startup
     {

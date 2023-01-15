@@ -3,6 +3,7 @@
 namespace Web.Facade.Services
 {
     using Microsoft.EntityFrameworkCore;
+    using Web.Facade.Data;
     using Web.Facade.Exceptions;
     using Web.Facade.Models;
 
