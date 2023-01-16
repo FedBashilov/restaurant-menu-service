@@ -6,6 +6,14 @@ namespace Web.Facade.Services
 
     public interface IMenuService
     {
-        public List<MenuItem> GetAllMenu();
+        public Task<List<MenuItem>> GetAllMenu();
+
+        public Task<MenuItem> GetMenuItem(int id);
+
+        public Task<MenuItem> CreateMenuItem(MenuItem menuItem);
+
+        public Task<MenuItem> UpdateMenuItem(int id, MenuItem menuItem);
+
+        public Task DeleteMenuItem(int id);
     }
 }

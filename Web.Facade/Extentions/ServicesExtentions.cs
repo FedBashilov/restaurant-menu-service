@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Services
+using Web.Facade.Services;
+
+namespace Web.Facade.Extentions
 {
     using Microsoft.Extensions.DependencyInjection.Extensions;
 
