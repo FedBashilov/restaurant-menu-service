@@ -3,6 +3,7 @@
 namespace Web.Facade.Controllers
 {
     using System.Text.Json;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Web.Facade.Exceptions;
     using Web.Facade.Models;
@@ -50,6 +51,7 @@ namespace Web.Facade.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [Route("")]
         public async Task<IActionResult> CreateMenuItem([FromBody] MenuItem newItem)
@@ -61,6 +63,7 @@ namespace Web.Facade.Controllers
             return this.StatusCode(201, menuItem);
         }
 
+        [Authorize(Roles = "admin")]
         [HttpPut]
         [Route("{id}")]
         public async Task<IActionResult> UpdateMenuItem([FromRoute] int id, [FromBody] MenuItem newItem)
@@ -80,6 +83,7 @@ namespace Web.Facade.Controllers
             }
         }
 
+        [Authorize(Roles = "admin")]
         [HttpDelete]
         [Route("{id}")]
         public async Task<IActionResult> DeleteMenuItem([FromRoute] int id)
