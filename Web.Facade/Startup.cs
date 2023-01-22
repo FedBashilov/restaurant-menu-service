@@ -2,7 +2,10 @@
 
 namespace Web.Facade
 {
+    using System.Text;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.IdentityModel.Tokens;
     using Web.Facade.Data;
     using Web.Facade.Extentions;
 
@@ -17,12 +20,8 @@ namespace Web.Facade
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContextFactory<DatabaseContext>(options =>
-            {
-                options.UseSqlServer(this.Configuration.GetConnectionString("DatabaseConnection"));
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
-            services.AddAdminServices();
+            services.AddAuthServices(this.Configuration);
+            services.AddAdminServices(this.Configuration);
             services.AddControllers();
         }
 
@@ -33,8 +32,9 @@ namespace Web.Facade
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseAuthentication();
             app.UseRouting();
-
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
