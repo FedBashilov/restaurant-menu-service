@@ -9,9 +9,9 @@ namespace Web.Facade.Services
 
     public class MenuService : IMenuService
     {
-        private readonly IDbContextFactory<DatabaseContext> dbCxtFactory;
+        private readonly IDbContextFactory<MenuDatabaseContext> dbCxtFactory;
 
-        public MenuService(IDbContextFactory<DatabaseContext> dbCxtFactory)
+        public MenuService(IDbContextFactory<MenuDatabaseContext> dbCxtFactory)
         {
             this.dbCxtFactory = dbCxtFactory;
         }
