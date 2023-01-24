@@ -13,7 +13,7 @@ namespace Web.Facade.Extentions
 
     public static class ServicesExtentions
     {
-        public static void AddAdminServices(this IServiceCollection services, IConfiguration configuration)
+        public static void AddMenuServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.TryAddSingleton<IMenuService, MenuService>();
             services.AddDbContextFactory<MenuDatabaseContext>(options =>

@@ -21,7 +21,7 @@ namespace Web.Facade
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthServices(this.Configuration);
-            services.AddAdminServices(this.Configuration);
+            services.AddMenuServices(this.Configuration);
             services.AddControllers();
         }
 
