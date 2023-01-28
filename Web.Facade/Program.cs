@@ -8,10 +8,14 @@ namespace Web.Facade
     {
         public static void Main(string[] args)
         {
-            CreateWebHost(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args).UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(
+                    webBuilder => webBuilder.UseStartup<Startup>());
+        }
     }
 }
