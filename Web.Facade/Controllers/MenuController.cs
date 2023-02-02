@@ -9,7 +9,7 @@ namespace Web.Facade.Controllers
     using Web.Facade.Models;
     using Web.Facade.Services;
 
-    [Route("api/menu")]
+    [Route("api/v1/menu")]
     public class MenuController : ControllerBase
     {
         private readonly IMenuService menuService;
