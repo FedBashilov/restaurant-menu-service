@@ -34,24 +34,37 @@ namespace Web.Facade.Services
             return menuItem;
         }
 
-        public async Task<MenuItem> CreateMenuItem(MenuItem newItem)
+        public async Task<MenuItem> CreateMenuItem(MenuItemDto newItemDto)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
+
+            var newItem = new MenuItem()
+            {
+                Name = newItemDto.Name,
+                Price = newItemDto.Price,
+            };
+
             var menuItem = dbContext.Menu.Add(newItem).Entity;
             await dbContext.SaveChangesAsync();
 
             return menuItem;
         }
 
-        public async Task<MenuItem> UpdateMenuItem(int id, MenuItem newItem)
+        public async Task<MenuItem> UpdateMenuItem(int id, MenuItemDto newItemDto)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
             if (!dbContext.Menu.Any(x => x.Id == id))
             {
-                throw new NotFoundException($"Not found menu item with id = {id}");
+                throw new NotFoundException();
             }
 
-            newItem.Id = id;
+            var newItem = new MenuItem()
+            {
+                Id = id,
+                Name = newItemDto.Name,
+                Price = newItemDto.Price,
+            };
+
             var menuItem = dbContext.Menu.Update(newItem).Entity;
             await dbContext.SaveChangesAsync();
 

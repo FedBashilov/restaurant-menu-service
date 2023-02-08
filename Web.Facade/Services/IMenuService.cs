@@ -10,9 +10,9 @@ namespace Web.Facade.Services
 
         public Task<MenuItem> GetMenuItem(int id);
 
-        public Task<MenuItem> CreateMenuItem(MenuItem menuItem);
+        public Task<MenuItem> CreateMenuItem(MenuItemDto menuItem);
 
-        public Task<MenuItem> UpdateMenuItem(int id, MenuItem menuItem);
+        public Task<MenuItem> UpdateMenuItem(int id, MenuItemDto menuItem);
 
         public Task DeleteMenuItem(int id);
     }
