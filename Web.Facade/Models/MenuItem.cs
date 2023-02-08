@@ -13,5 +13,7 @@ namespace Web.Facade.Models
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? Price { get; set; }
+
+        public bool Visible { get; set; } = true;
     }
 }

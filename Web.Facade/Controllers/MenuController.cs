@@ -118,26 +118,5 @@ namespace Web.Facade.Controllers
                 return this.StatusCode(500, new ErrorResponse($"Can't update menu item. Unexpected error."));
             }
         }
-
-        [Authorize(Roles = "admin")]
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IActionResult> DeleteMenuItem([FromRoute] int id)
-        {
-            this.logger.LogInformation($"Starting to delete menu item with id = {id} ...");
-
-            try
-            {
-                await this.menuService.DeleteMenuItem(id);
-
-                this.logger.LogInformation($"The menu item with id = {id} deleted successfully! Sending 204 response...");
-                return this.NoContent();
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogWarning(ex, $"Can't delete menu item. Unexpected error. Sending 500 response...");
-                return this.StatusCode(500, new ErrorResponse($"Can't delete menu item. Unexpected error."));
-            }
-        }
     }
 }

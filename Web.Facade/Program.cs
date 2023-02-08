@@ -2,8 +2,6 @@
 
 namespace Web.Facade
 {
-    using Microsoft.AspNetCore;
-
     public class Program
     {
         public static void Main(string[] args)
