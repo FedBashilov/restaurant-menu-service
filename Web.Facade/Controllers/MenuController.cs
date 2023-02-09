@@ -2,7 +2,9 @@
 
 namespace Web.Facade.Controllers
 {
+    using System.IdentityModel.Tokens.Jwt;
     using System.Text.Json;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Web.Facade.Exceptions;
@@ -21,6 +23,7 @@ namespace Web.Facade.Controllers
             this.logger = logger;
         }
 
+        [Authorize(Roles = "client, cook, admin")]
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> GetAllMenu()
@@ -29,7 +32,10 @@ namespace Web.Facade.Controllers
 
             try
             {
-                var menu = await this.menuService.GetAllMenu();
+                var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
+                var userRole = JwtService.GetClaimValue(jwtEncoded, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+                var onlyVisible = userRole == "client";
+                var menu = await this.menuService.GetAllMenu(onlyVisible);
 
                 this.logger.LogInformation($"All menu received successfully! Menu: {JsonSerializer.Serialize(menu)}. Sending the menu in response...");
                 return this.Ok(menu);
@@ -41,6 +47,7 @@ namespace Web.Facade.Controllers
             }
         }
 
+        [Authorize(Roles = "client, cook, admin")]
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetMenuItem([FromRoute] int id)
@@ -49,7 +56,10 @@ namespace Web.Facade.Controllers
 
             try
             {
-                var menuItem = await this.menuService.GetMenuItem(id);
+                var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
+                var userRole = JwtService.GetClaimValue(jwtEncoded, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
+                var onlyVisible = userRole == "client";
+                var menuItem = await this.menuService.GetMenuItem(id, onlyVisible);
 
                 this.logger.LogInformation($"The menu item with id = {id} received successfully! Menu item: {JsonSerializer.Serialize(menuItem)}. Sending the menu item in response...");
                 return this.Ok(menuItem);
@@ -64,7 +74,7 @@ namespace Web.Facade.Controllers
                 this.logger.LogWarning(ex, $"Can't get menu item. Unexpected error. Sending 500 response...");
                 return this.StatusCode(500, new ErrorResponse($"Can't get menu item. Unexpected error."));
             }
-}
+        }
 
         [Authorize(Roles = "admin")]
         [HttpPost]

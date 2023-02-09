@@ -2,6 +2,7 @@
 
 namespace Web.Facade.Services
 {
+    using System.Linq;
     using Microsoft.EntityFrameworkCore;
     using Web.Facade.Data;
     using Web.Facade.Exceptions;
@@ -16,16 +17,17 @@ namespace Web.Facade.Services
             this.dbCxtFactory = dbCxtFactory;
         }
 
-        public async Task<List<MenuItem>> GetAllMenu()
+        public async Task<List<MenuItem>> GetAllMenu(bool visiable = false)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
-            return await Task.FromResult(dbContext.Menu.ToList());
+            var menuItems = dbContext.Menu.Where(x => x.Visible == visiable).ToList();
+            return await Task.FromResult(menuItems ?? new List<MenuItem>());
         }
 
-        public async Task<MenuItem> GetMenuItem(int id)
+        public async Task<MenuItem> GetMenuItem(int id, bool visiable = false)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
-            var menuItem = await dbContext.Menu.FindAsync(id);
+            var menuItem = await dbContext.Menu.FirstAsync(x => x.Id == id && x.Visible == visiable);
             if (menuItem == null)
             {
                 throw new NotFoundException($"Not found menuItem with id = {id} while executing GetMenuItem method");
