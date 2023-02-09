@@ -17,15 +17,22 @@ namespace Web.Facade.Services
             this.dbCxtFactory = dbCxtFactory;
         }
 
-        public async Task<List<MenuItem>> GetAllMenu(bool onlyVisiable = false)
+        public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisiable = false)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
 
-            var menuItems = onlyVisiable
-                ? dbContext.Menu.Where(x => x.Visible == true).ToList()
-                : dbContext.Menu.ToList();
+            var selectQuery = onlyVisiable ? dbContext.Menu.Where(x => x.Visible == true) : dbContext.Menu;
 
-            return await Task.FromResult(menuItems ?? new List<MenuItem>());
+            if (orderDesc)
+            {
+                selectQuery = selectQuery.OrderByDescending(x => x.Id);
+            }
+
+            var pageQuery = selectQuery.Skip(offset).Take(count);
+
+            var menu = await pageQuery.ToListAsync();
+
+            return menu;
         }
 
         public async Task<MenuItem> GetMenuItem(int id, bool onlyVisiable = false)

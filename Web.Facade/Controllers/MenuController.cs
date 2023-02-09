@@ -26,7 +26,10 @@ namespace Web.Facade.Controllers
         [Authorize(Roles = "client, cook, admin")]
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetAllMenu()
+        public async Task<IActionResult> GetMenu(
+            [FromQuery] int offset = 0,
+            [FromQuery] int count = 100,
+            [FromQuery] bool orderDesc = false)
         {
             this.logger.LogInformation($"Starting to get all menu...");
 
@@ -35,7 +38,8 @@ namespace Web.Facade.Controllers
                 var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
                 var userRole = JwtService.GetClaimValue(jwtEncoded, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
                 var onlyVisible = userRole == "client";
-                var menu = await this.menuService.GetAllMenu(onlyVisible);
+
+                var menu = await this.menuService.GetMenu(offset, count, orderDesc, onlyVisible);
 
                 this.logger.LogInformation($"All menu received successfully! Menu: {JsonSerializer.Serialize(menu)}. Sending the menu in response...");
                 return this.Ok(menu);
