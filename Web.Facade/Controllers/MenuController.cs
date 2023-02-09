@@ -81,6 +81,7 @@ namespace Web.Facade.Controllers
         [Route("")]
         public async Task<IActionResult> CreateMenuItem([FromBody] MenuItemDto menuItemDto)
         {
+            if (menuItemDto == null) { return this.BadRequest(new ErrorResponse("Invalid request body.")); }
             if (menuItemDto.Name == null) { return this.BadRequest(new ErrorResponse("Name cannot be null.")); }
             if (menuItemDto.Price == null) { return this.BadRequest(new ErrorResponse("Price cannot be null.")); }
 
@@ -105,6 +106,7 @@ namespace Web.Facade.Controllers
         [Route("{id}")]
         public async Task<IActionResult> UpdateMenuItem([FromRoute] int id, [FromBody] MenuItemDto menuItemDto)
         {
+            if (menuItemDto == null) { return this.BadRequest(new ErrorResponse("Invalid request body.")); }
             if (menuItemDto.Name == null) { return this.BadRequest(new ErrorResponse("Name cannot be null.")); }
             if (menuItemDto.Price == null) { return this.BadRequest(new ErrorResponse("Price cannot be null.")); }
 
