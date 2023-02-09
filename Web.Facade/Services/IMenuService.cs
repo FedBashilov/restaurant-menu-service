@@ -6,9 +6,9 @@ namespace Web.Facade.Services
 
     public interface IMenuService
     {
-        public Task<List<MenuItem>> GetAllMenu(bool visible);
+        public Task<List<MenuItem>> GetAllMenu(bool onlyVisible);
 
-        public Task<MenuItem> GetMenuItem(int id, bool visible);
+        public Task<MenuItem> GetMenuItem(int id, bool onlyVisible);
 
         public Task<MenuItem> CreateMenuItem(MenuItemDto menuItem);
 

@@ -17,17 +17,25 @@ namespace Web.Facade.Services
             this.dbCxtFactory = dbCxtFactory;
         }
 
-        public async Task<List<MenuItem>> GetAllMenu(bool visiable = false)
+        public async Task<List<MenuItem>> GetAllMenu(bool onlyVisiable = false)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
-            var menuItems = dbContext.Menu.Where(x => x.Visible == visiable).ToList();
+
+            var menuItems = onlyVisiable
+                ? dbContext.Menu.Where(x => x.Visible == true).ToList()
+                : dbContext.Menu.ToList();
+
             return await Task.FromResult(menuItems ?? new List<MenuItem>());
         }
 
-        public async Task<MenuItem> GetMenuItem(int id, bool visiable = false)
+        public async Task<MenuItem> GetMenuItem(int id, bool onlyVisiable = false)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
-            var menuItem = await dbContext.Menu.FirstAsync(x => x.Id == id && x.Visible == visiable);
+
+            var menuItem = await (onlyVisiable
+                ? dbContext.Menu.FirstAsync(x => x.Id == id & x.Visible == true)
+                : dbContext.Menu.FirstAsync(x => x.Id == id));
+
             if (menuItem == null)
             {
                 throw new NotFoundException($"Not found menuItem with id = {id} while executing GetMenuItem method");
