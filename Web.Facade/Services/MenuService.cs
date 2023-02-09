@@ -17,11 +17,11 @@ namespace Web.Facade.Services
             this.dbCxtFactory = dbCxtFactory;
         }
 
-        public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisiable = false)
+        public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = false)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
 
-            var selectQuery = onlyVisiable ? dbContext.Menu.Where(x => x.Visible == true) : dbContext.Menu;
+            var selectQuery = onlyVisible ? dbContext.Menu.Where(x => x.Visible == true) : dbContext.Menu;
 
             if (orderDesc)
             {
@@ -35,11 +35,11 @@ namespace Web.Facade.Services
             return menu;
         }
 
-        public async Task<MenuItem> GetMenuItem(int id, bool onlyVisiable = false)
+        public async Task<MenuItem> GetMenuItem(int id, bool onlyVisible = false)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
 
-            var menuItem = await (onlyVisiable
+            var menuItem = await (onlyVisible
                 ? dbContext.Menu.FirstAsync(x => x.Id == id & x.Visible == true)
                 : dbContext.Menu.FirstAsync(x => x.Id == id));
 
