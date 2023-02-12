@@ -26,6 +26,8 @@ namespace Web.Facade.Controllers
         [Authorize(Roles = "client, cook, admin")]
         [HttpGet]
         [Route("")]
+        [ProducesResponseType(200, Type = typeof(List<MenuItem>))]
+        [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetMenu(
             [FromQuery] int offset = 0,
             [FromQuery] int count = 100,
@@ -54,6 +56,9 @@ namespace Web.Facade.Controllers
         [Authorize(Roles = "client, cook, admin")]
         [HttpGet]
         [Route("{id}")]
+        [ProducesResponseType(200, Type = typeof(MenuItem))]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetMenuItem([FromRoute] int id)
         {
             this.logger.LogInformation($"Starting to get menu item with id = {id} ...");
@@ -83,6 +88,9 @@ namespace Web.Facade.Controllers
         [Authorize(Roles = "admin")]
         [HttpPost]
         [Route("")]
+        [ProducesResponseType(201, Type = typeof(MenuItem))]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> CreateMenuItem([FromBody] MenuItemDto menuItemDto)
         {
             if (menuItemDto == null) { return this.BadRequest(new ErrorResponse("Invalid request body.")); }
@@ -108,6 +116,10 @@ namespace Web.Facade.Controllers
         [Authorize(Roles = "admin")]
         [HttpPut]
         [Route("{id}")]
+        [ProducesResponseType(200, Type = typeof(MenuItem))]
+        [ProducesResponseType(400, Type = typeof(ErrorResponse))]
+        [ProducesResponseType(404)]
+        [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> UpdateMenuItem([FromRoute] int id, [FromBody] MenuItemDto menuItemDto)
         {
             if (menuItemDto == null) { return this.BadRequest(new ErrorResponse("Invalid request body.")); }
