@@ -18,6 +18,9 @@ namespace Web.Facade
         {
             services.AddAuthServices(this.Configuration);
             services.AddMenuServices(this.Configuration);
+
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
             services.AddControllers();
 
             services.AddSwaggerGen(opt =>
@@ -57,6 +60,14 @@ namespace Web.Facade
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            var supportedCultures = new[] { "en-US", "ru-RU" };
+            var localizationOptions =
+                new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
+                .AddSupportedCultures(supportedCultures)
+                .AddSupportedUICultures(supportedCultures);
+
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseAuthentication();
             app.UseRouting();
