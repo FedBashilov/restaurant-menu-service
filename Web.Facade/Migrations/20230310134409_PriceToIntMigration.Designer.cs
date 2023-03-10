@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Web.Facade.Data;
 
@@ -10,9 +11,10 @@ using Web.Facade.Data;
 namespace Web.Facade.Migrations
 {
     [DbContext(typeof(MenuDatabaseContext))]
-    partial class MenuDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230310134409_PriceToIntMigration")]
+    partial class PriceToIntMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
