@@ -2,17 +2,13 @@
 
 namespace Web.Facade.Models
 {
-    using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.EntityFrameworkCore.Metadata.Internal;
-
     public class MenuItem
     {
         public int Id { get; set; }
 
         public string? Name { get; set; }
 
-        [Column(TypeName = "decimal(18, 2)")]
-        public decimal? Price { get; set; }
+        public int Price { get; set; }
 
         public bool Visible { get; set; } = true;
     }
