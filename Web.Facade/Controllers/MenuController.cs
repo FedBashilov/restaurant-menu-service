@@ -7,6 +7,7 @@ namespace Web.Facade.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Localization;
+    using Web.Facade.Constants;
     using Web.Facade.Exceptions;
     using Web.Facade.Models;
     using Web.Facade.Services;
@@ -28,7 +29,7 @@ namespace Web.Facade.Controllers
             this.logger = logger;
         }
 
-        [Authorize(Roles = "client, cook, admin")]
+        [Authorize(Roles = $"{UserRoles.Client}, {UserRoles.Cook}, {UserRoles.Admin}")]
         [HttpGet("")]
         [ProducesResponseType(200, Type = typeof(List<MenuItem>))]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
@@ -42,8 +43,8 @@ namespace Web.Facade.Controllers
             try
             {
                 var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
-                var userRole = JwtService.GetClaimValue(jwtEncoded, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
-                var onlyVisible = userRole == "client";
+                var userRole = JwtService.GetClaimValue(jwtEncoded, ClaimTypes.Role);
+                var onlyVisible = userRole == UserRoles.Client;
 
                 var menu = await this.menuService.GetMenu(offset, count, orderDesc, onlyVisible);
 
@@ -57,7 +58,7 @@ namespace Web.Facade.Controllers
             }
         }
 
-        [Authorize(Roles = "client, cook, admin")]
+        [Authorize(Roles = $"{UserRoles.Client}, {UserRoles.Cook}, {UserRoles.Admin}")]
         [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(MenuItem))]
         [ProducesResponseType(404)]
@@ -69,8 +70,8 @@ namespace Web.Facade.Controllers
             try
             {
                 var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
-                var userRole = JwtService.GetClaimValue(jwtEncoded, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
-                var onlyVisible = userRole == "client";
+                var userRole = JwtService.GetClaimValue(jwtEncoded, ClaimTypes.Role);
+                var onlyVisible = userRole == UserRoles.Client;
 
                 var menuItem = await this.menuService.GetMenuItem(id, onlyVisible);
 
@@ -89,7 +90,7 @@ namespace Web.Facade.Controllers
             }
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("")]
         [ProducesResponseType(201, Type = typeof(MenuItem))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
@@ -117,7 +118,7 @@ namespace Web.Facade.Controllers
             }
         }
 
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = UserRoles.Admin)]
         [HttpPut("{id}")]
         [ProducesResponseType(200, Type = typeof(MenuItem))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
