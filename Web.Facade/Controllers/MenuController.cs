@@ -29,8 +29,7 @@ namespace Web.Facade.Controllers
         }
 
         [Authorize(Roles = "client, cook, admin")]
-        [HttpGet]
-        [Route("")]
+        [HttpGet("")]
         [ProducesResponseType(200, Type = typeof(List<MenuItem>))]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetMenu(
@@ -59,8 +58,7 @@ namespace Web.Facade.Controllers
         }
 
         [Authorize(Roles = "client, cook, admin")]
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         [ProducesResponseType(200, Type = typeof(MenuItem))]
         [ProducesResponseType(404)]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
@@ -73,6 +71,7 @@ namespace Web.Facade.Controllers
                 var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
                 var userRole = JwtService.GetClaimValue(jwtEncoded, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role");
                 var onlyVisible = userRole == "client";
+
                 var menuItem = await this.menuService.GetMenuItem(id, onlyVisible);
 
                 this.logger.LogInformation($"The menu item with id = {id} received successfully! Menu item: {JsonSerializer.Serialize(menuItem)}. Sending the menu item in response...");
@@ -91,8 +90,7 @@ namespace Web.Facade.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPost]
-        [Route("")]
+        [HttpPost("")]
         [ProducesResponseType(201, Type = typeof(MenuItem))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
@@ -120,8 +118,7 @@ namespace Web.Facade.Controllers
         }
 
         [Authorize(Roles = "admin")]
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
         [ProducesResponseType(200, Type = typeof(MenuItem))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404)]
