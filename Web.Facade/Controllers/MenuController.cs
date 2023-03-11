@@ -98,9 +98,10 @@ namespace Web.Facade.Controllers
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> CreateMenuItem([FromBody] MenuItemDto menuItemDto)
         {
-            if (menuItemDto == null) { return this.BadRequest(new ErrorResponse(this.localizer["Invalid request body"].Value)); }
-            if (menuItemDto.Name == null) { return this.BadRequest(new ErrorResponse(this.localizer["Name is required"].Value)); }
-            if (menuItemDto.Price == null) { return this.BadRequest(new ErrorResponse(this.localizer["Price is required"].Value)); }
+            if (!this.IsInputModelValid(out var message))
+            {
+                return this.StatusCode(400, new ErrorResponse(message));
+            }
 
             this.logger.LogInformation($"Starting to create menu item: {JsonSerializer.Serialize(menuItemDto)} ...");
 
@@ -127,9 +128,10 @@ namespace Web.Facade.Controllers
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> UpdateMenuItem([FromRoute] int id, [FromBody] MenuItemDto menuItemDto)
         {
-            if (menuItemDto == null) { return this.BadRequest(new ErrorResponse(this.localizer["Invalid request body"].Value)); }
-            if (menuItemDto.Name == null) { return this.BadRequest(new ErrorResponse(this.localizer["Name is required"].Value)); }
-            if (menuItemDto.Price == null) { return this.BadRequest(new ErrorResponse(this.localizer["Price is required"].Value)); }
+            if (!this.IsInputModelValid(out var message))
+            {
+                return this.StatusCode(400, new ErrorResponse(message));
+            }
 
             this.logger.LogInformation($"Starting to update menu item with id = {id}. Menu item = {JsonSerializer.Serialize(menuItemDto)} ...");
 
@@ -150,6 +152,22 @@ namespace Web.Facade.Controllers
                 this.logger.LogWarning(ex, $"Can't update menu item. Unexpected error. Sending 500 response...");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
+        }
+
+        private bool IsInputModelValid(out string? errorMessage)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                errorMessage = this.ModelState
+                    .SelectMany(state => state.Value.Errors)
+                    .Aggregate(string.Empty, (current, error) => current + (error.ErrorMessage + ". "));
+
+                return false;
+            }
+
+            errorMessage = null;
+
+            return true;
         }
     }
 }
