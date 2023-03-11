@@ -7,6 +7,7 @@ namespace Web.Facade.Services
     using Web.Facade.Data;
     using Web.Facade.Exceptions;
     using Web.Facade.Models;
+    using Web.Facade.Models.DTOs;
 
     public class MenuService : IMenuService
     {
@@ -51,7 +52,7 @@ namespace Web.Facade.Services
             return menuItem;
         }
 
-        public async Task<MenuItem> CreateMenuItem(MenuItemDto newItemDto)
+        public async Task<MenuItem> CreateMenuItem(MenuItemDTO newItemDto)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
 
@@ -67,7 +68,7 @@ namespace Web.Facade.Services
             return menuItem;
         }
 
-        public async Task<MenuItem> UpdateMenuItem(int id, MenuItemDto newItemDto)
+        public async Task<MenuItem> UpdateMenuItem(int id, MenuItemDTO newItemDto)
         {
             using var dbContext = this.dbCxtFactory.CreateDbContext();
             if (!dbContext.Menu.Any(x => x.Id == id))

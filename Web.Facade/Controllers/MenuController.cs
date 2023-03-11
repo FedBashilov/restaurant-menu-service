@@ -10,6 +10,8 @@ namespace Web.Facade.Controllers
     using Web.Facade.Constants;
     using Web.Facade.Exceptions;
     using Web.Facade.Models;
+    using Web.Facade.Models.DTOs;
+    using Web.Facade.Models.Responses;
     using Web.Facade.Services;
 
     [Route("api/v1/menu")]
@@ -95,7 +97,7 @@ namespace Web.Facade.Controllers
         [ProducesResponseType(201, Type = typeof(MenuItem))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> CreateMenuItem([FromBody] MenuItemDto menuItemDto)
+        public async Task<IActionResult> CreateMenuItem([FromBody] MenuItemDTO menuItemDto)
         {
             if (!this.IsInputModelValid(out var message))
             {
@@ -124,7 +126,7 @@ namespace Web.Facade.Controllers
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404)]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> UpdateMenuItem([FromRoute] int id, [FromBody] MenuItemDto menuItemDto)
+        public async Task<IActionResult> UpdateMenuItem([FromRoute] int id, [FromBody] MenuItemDTO menuItemDto)
         {
             if (!this.IsInputModelValid(out var message))
             {

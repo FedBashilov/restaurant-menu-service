@@ -3,6 +3,7 @@
 namespace Web.Facade.Services
 {
     using Web.Facade.Models;
+    using Web.Facade.Models.DTOs;
 
     public interface IMenuService
     {
@@ -10,9 +11,9 @@ namespace Web.Facade.Services
 
         public Task<MenuItem> GetMenuItem(int id, bool onlyVisible = false);
 
-        public Task<MenuItem> CreateMenuItem(MenuItemDto menuItem);
+        public Task<MenuItem> CreateMenuItem(MenuItemDTO menuItem);
 
-        public Task<MenuItem> UpdateMenuItem(int id, MenuItemDto menuItem);
+        public Task<MenuItem> UpdateMenuItem(int id, MenuItemDTO menuItem);
 
         public Task DeleteMenuItem(int id);
     }

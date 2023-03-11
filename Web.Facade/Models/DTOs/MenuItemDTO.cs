@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Models
+namespace Web.Facade.Models.DTOs
 {
     using System.ComponentModel.DataAnnotations;
 
-    public class MenuItemDto
+    public class MenuItemDTO
     {
         [Required(ErrorMessage = "The Name param is required")]
         public string? Name { get; set; }
