@@ -2,8 +2,10 @@
 
 namespace Web.Facade
 {
+    using Infrastructure.Auth.Extentions;
+    using Infrastructure.Database.Extentions;
+    using Menu.Service.Extentions;
     using Microsoft.OpenApi.Models;
-    using Web.Facade.Extentions;
 
     public class Startup
     {
@@ -17,7 +19,8 @@ namespace Web.Facade
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthServices(this.Configuration);
-            services.AddMenuServices(this.Configuration);
+            services.AddDatabaseServices(this.Configuration);
+            services.AddMenuServices();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 

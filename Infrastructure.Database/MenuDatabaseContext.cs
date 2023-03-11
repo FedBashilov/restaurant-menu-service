@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Data
+namespace Infrastructure.Database
 {
+    using Infrastructure.Core.Models;
     using Microsoft.EntityFrameworkCore;
-    using Web.Facade.Models;
 
     public class MenuDatabaseContext : DbContext
     {

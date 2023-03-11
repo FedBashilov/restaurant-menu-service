@@ -3,16 +3,17 @@
 namespace Web.Facade.Controllers
 {
     using System.Text.Json;
+    using Infrastructure.Auth.Constants;
+    using Infrastructure.Auth.Services;
+    using Infrastructure.Core.Models;
+    using Menu.Service;
+    using Menu.Service.Exceptions;
+    using Menu.Service.Models.DTOs;
+    using Menu.Service.Models.Responses;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Localization;
-    using Web.Facade.Constants;
-    using Web.Facade.Exceptions;
-    using Web.Facade.Models;
-    using Web.Facade.Models.DTOs;
-    using Web.Facade.Models.Responses;
-    using Web.Facade.Services;
 
     [Route("api/v1/menu")]
     public class MenuController : ControllerBase

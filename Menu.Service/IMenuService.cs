@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Services
+namespace Menu.Service
 {
-    using Web.Facade.Models;
-    using Web.Facade.Models.DTOs;
+    using Menu.Service.Models.DTOs;
+    using Infrastructure.Core.Models;
 
     public interface IMenuService
     {

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade
+namespace Infrastructure.Auth
 {
     public class JWTSettings
     {

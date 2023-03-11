@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Constants
+namespace Infrastructure.Auth.Constants
 {
     public static class UserRoles
     {

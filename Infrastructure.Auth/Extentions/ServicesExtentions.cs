@@ -1,28 +1,15 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Extentions
+namespace Infrastructure.Auth.Extentions
 {
-    using System.Text;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection.Extensions;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.IdentityModel.Tokens;
-    using Web.Facade.Data;
-    using Web.Facade.Services;
+    using System.Text;
 
     public static class ServicesExtentions
     {
-        public static void AddMenuServices(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.TryAddSingleton<IMenuService, MenuService>();
-            services.AddDbContextFactory<MenuDatabaseContext>(options =>
-            {
-                options.UseSqlServer(configuration.GetConnectionString("DatabaseConnection"));
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
-        }
-
         public static void AddAuthServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));

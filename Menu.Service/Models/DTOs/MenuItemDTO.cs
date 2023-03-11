@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Models.DTOs
+namespace Menu.Service.Models.DTOs
 {
     using System.ComponentModel.DataAnnotations;
 

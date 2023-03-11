@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Models
+namespace Infrastructure.Core.Models
 {
     public class MenuItem
     {

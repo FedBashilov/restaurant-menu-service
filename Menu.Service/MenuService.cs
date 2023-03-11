@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Services
+namespace Menu.Service
 {
     using System.Linq;
+    using Infrastructure.Core.Models;
+    using Infrastructure.Database;
+    using Menu.Service.Exceptions;
+    using Menu.Service.Models.DTOs;
     using Microsoft.EntityFrameworkCore;
-    using Web.Facade.Data;
-    using Web.Facade.Exceptions;
-    using Web.Facade.Models;
-    using Web.Facade.Models.DTOs;
 
     public class MenuService : IMenuService
     {
@@ -20,7 +20,7 @@ namespace Web.Facade.Services
 
         public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = false)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            using var dbContext = dbCxtFactory.CreateDbContext();
 
             var selectQuery = onlyVisible ? dbContext.Menu.Where(x => x.Visible == true) : dbContext.Menu;
 
@@ -38,7 +38,7 @@ namespace Web.Facade.Services
 
         public async Task<MenuItem> GetMenuItem(int id, bool onlyVisible = false)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            using var dbContext = dbCxtFactory.CreateDbContext();
 
             var menuItem = await (onlyVisible
                 ? dbContext.Menu.FirstAsync(x => x.Id == id & x.Visible == true)
@@ -54,7 +54,7 @@ namespace Web.Facade.Services
 
         public async Task<MenuItem> CreateMenuItem(MenuItemDTO newItemDto)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            using var dbContext = dbCxtFactory.CreateDbContext();
 
             var newItem = new MenuItem()
             {
@@ -70,7 +70,7 @@ namespace Web.Facade.Services
 
         public async Task<MenuItem> UpdateMenuItem(int id, MenuItemDTO newItemDto)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            using var dbContext = dbCxtFactory.CreateDbContext();
             if (!dbContext.Menu.Any(x => x.Id == id))
             {
                 throw new NotFoundException();
@@ -91,7 +91,7 @@ namespace Web.Facade.Services
 
         public async Task DeleteMenuItem(int id)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            using var dbContext = dbCxtFactory.CreateDbContext();
             var menuItem = dbContext.Menu.FirstOrDefault(x => x.Id == id);
 
             if (menuItem != null)

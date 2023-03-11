@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Web.Facade.Services
+namespace Infrastructure.Auth.Services
 {
     using System.IdentityModel.Tokens.Jwt;
 
