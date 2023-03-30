@@ -7,9 +7,9 @@ namespace Menu.Service
 
     public interface IMenuService
     {
-        public Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = false);
+        public Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = true);
 
-        public Task<MenuItem> GetMenuItem(int id, bool onlyVisible = false);
+        public Task<MenuItem> GetMenuItem(int id);
 
         public Task<MenuItem> CreateMenuItem(MenuItemDTO menuItem);
 

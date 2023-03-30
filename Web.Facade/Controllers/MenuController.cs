@@ -39,15 +39,14 @@ namespace Web.Facade.Controllers
         public async Task<IActionResult> GetMenu(
             [FromQuery] int offset = 0,
             [FromQuery] int count = 100,
-            [FromQuery] bool orderDesc = false)
+            [FromQuery] bool orderDesc = false,
+            [FromQuery] bool onlyVisible = true)
         {
             this.logger.LogInformation($"Starting to get all menu...");
 
             try
             {
                 var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
-                var userRole = JwtService.GetClaimValue(jwtEncoded, ClaimTypes.Role);
-                var onlyVisible = userRole == UserRoles.Client;
 
                 var menu = await this.menuService.GetMenu(offset, count, orderDesc, onlyVisible);
 
@@ -73,10 +72,8 @@ namespace Web.Facade.Controllers
             try
             {
                 var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
-                var userRole = JwtService.GetClaimValue(jwtEncoded, ClaimTypes.Role);
-                var onlyVisible = userRole == UserRoles.Client;
 
-                var menuItem = await this.menuService.GetMenuItem(id, onlyVisible);
+                var menuItem = await this.menuService.GetMenuItem(id);
 
                 this.logger.LogInformation($"The menu item with id = {id} received successfully! Menu item: {JsonSerializer.Serialize(menuItem)}. Sending the menu item in response...");
                 return this.Ok(menuItem);

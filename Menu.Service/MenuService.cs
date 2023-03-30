@@ -18,7 +18,7 @@ namespace Menu.Service
             this.dbCxtFactory = dbCxtFactory;
         }
 
-        public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = false)
+        public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = true)
         {
             using var dbContext = dbCxtFactory.CreateDbContext();
 
@@ -36,13 +36,11 @@ namespace Menu.Service
             return menu;
         }
 
-        public async Task<MenuItem> GetMenuItem(int id, bool onlyVisible = false)
+        public async Task<MenuItem> GetMenuItem(int id)
         {
             using var dbContext = dbCxtFactory.CreateDbContext();
 
-            var menuItem = await (onlyVisible
-                ? dbContext.Menu.FirstAsync(x => x.Id == id & x.Visible == true)
-                : dbContext.Menu.FirstAsync(x => x.Id == id));
+            var menuItem = await dbContext.Menu.FirstAsync(x => x.Id == id);
 
             if (menuItem == null)
             {
