@@ -2,8 +2,8 @@
 
 namespace Menu.Service
 {
-    using Menu.Service.Models.DTOs;
     using Infrastructure.Core.Models;
+    using Menu.Service.Models.DTOs;
 
     public interface IMenuService
     {

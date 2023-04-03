@@ -5,7 +5,6 @@ namespace Web.Facade.Controllers
     using System.Diagnostics.CodeAnalysis;
     using System.Text.Json;
     using Infrastructure.Auth.Constants;
-    using Infrastructure.Auth.Services;
     using Infrastructure.Core.Models;
     using Menu.Service;
     using Menu.Service.Exceptions;
