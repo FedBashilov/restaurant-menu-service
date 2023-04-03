@@ -20,16 +20,17 @@ namespace Menu.Service
 
         public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = true)
         {
-            using var dbContext = dbCxtFactory.CreateDbContext();
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
 
-            var selectQuery = onlyVisible ? dbContext.Menu.Where(x => x.Visible == true) : dbContext.Menu;
+            var selectQuery = onlyVisible ?
+                dbContext.Menu.Where(x => x.Visible == true) :
+                dbContext.Menu;
 
-            if (orderDesc)
-            {
-                selectQuery = selectQuery.OrderByDescending(x => x.Id);
-            }
+            var orderQuery = orderDesc ?
+                selectQuery.OrderByDescending(x => x.Id) :
+                selectQuery.OrderBy(x => x.Id);
 
-            var pageQuery = selectQuery.Skip(offset).Take(count);
+            var pageQuery = orderQuery.Skip(offset).Take(count);
 
             var menu = await pageQuery.ToListAsync();
 
@@ -38,7 +39,7 @@ namespace Menu.Service
 
         public async Task<MenuItem> GetMenuItem(int id)
         {
-            using var dbContext = dbCxtFactory.CreateDbContext();
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
 
             var menuItem = await dbContext.Menu.FirstAsync(x => x.Id == id);
 
@@ -52,7 +53,7 @@ namespace Menu.Service
 
         public async Task<MenuItem> CreateMenuItem(MenuItemDTO newItemDto)
         {
-            using var dbContext = dbCxtFactory.CreateDbContext();
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
 
             var newItem = new MenuItem()
             {
@@ -68,7 +69,7 @@ namespace Menu.Service
 
         public async Task<MenuItem> UpdateMenuItem(int id, MenuItemDTO newItemDto)
         {
-            using var dbContext = dbCxtFactory.CreateDbContext();
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
             if (!dbContext.Menu.Any(x => x.Id == id))
             {
                 throw new NotFoundException();
@@ -89,7 +90,7 @@ namespace Menu.Service
 
         public async Task DeleteMenuItem(int id)
         {
-            using var dbContext = dbCxtFactory.CreateDbContext();
+            using var dbContext = this.dbCxtFactory.CreateDbContext();
             var menuItem = dbContext.Menu.FirstOrDefault(x => x.Id == id);
 
             if (menuItem != null)
