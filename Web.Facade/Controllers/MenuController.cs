@@ -2,6 +2,7 @@
 
 namespace Web.Facade.Controllers
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Text.Json;
     using Infrastructure.Auth.Constants;
     using Infrastructure.Auth.Services;
@@ -152,12 +153,12 @@ namespace Web.Facade.Controllers
             }
         }
 
-        private bool IsInputModelValid(out string? errorMessage)
+        private bool IsInputModelValid([NotNullWhen(false)]out string? errorMessage)
         {
             if (!this.ModelState.IsValid)
             {
                 errorMessage = this.ModelState
-                    .SelectMany(state => state.Value.Errors)
+                    .SelectMany(state => state.Value!.Errors)
                     .Aggregate(string.Empty, (current, error) => current + (error.ErrorMessage + ". "));
 
                 return false;

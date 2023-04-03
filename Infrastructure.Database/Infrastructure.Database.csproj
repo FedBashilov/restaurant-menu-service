@@ -4,6 +4,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn),1573,1591,1712</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,5 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure.Core\Infrastructure.Core.csproj" />
   </ItemGroup>
+
+  <Import Project="..\Shared\Shared.projitems" Label="Shared" />
 
 </Project>
