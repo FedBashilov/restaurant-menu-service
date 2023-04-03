@@ -2,6 +2,7 @@
 
 namespace Web.Facade.Controllers
 {
+    using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
     using System.Text.Json;
     using Infrastructure.Auth.Constants;
@@ -37,25 +38,19 @@ namespace Web.Facade.Controllers
         [ProducesResponseType(200, Type = typeof(List<MenuItem>))]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetMenu(
-            [FromQuery] int offset = 0,
-            [FromQuery] int count = 100,
+            [FromQuery][Range(0, int.MaxValue)] int offset = 0,
+            [FromQuery][Range(1, int.MaxValue)] int count = 100,
             [FromQuery] bool orderDesc = false,
             [FromQuery] bool onlyVisible = true)
         {
-            this.logger.LogInformation($"Starting to get all menu...");
-
             try
             {
-                var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
-
                 var menu = await this.menuService.GetMenu(offset, count, orderDesc, onlyVisible);
-
-                this.logger.LogInformation($"All menu received successfully! Menu: {JsonSerializer.Serialize(menu)}. Sending the menu in response...");
                 return this.Ok(menu);
             }
             catch (Exception ex)
             {
-                this.logger.LogWarning(ex, $"Can't get menu. Unexpected error. Sending 500 response...");
+                this.logger.LogError(ex, $"Can't get menu. {ex.Message}");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
         }
@@ -67,25 +62,19 @@ namespace Web.Facade.Controllers
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetMenuItem([FromRoute] int id)
         {
-            this.logger.LogInformation($"Starting to get menu item with id = {id} ...");
-
             try
             {
-                var jwtEncoded = await this.HttpContext.GetTokenAsync("access_token");
-
                 var menuItem = await this.menuService.GetMenuItem(id);
-
-                this.logger.LogInformation($"The menu item with id = {id} received successfully! Menu item: {JsonSerializer.Serialize(menuItem)}. Sending the menu item in response...");
                 return this.Ok(menuItem);
             }
             catch (NotFoundException ex)
             {
-                this.logger.LogWarning(ex, $"Can't get menu item. Not found menu item with id = {id}. Sending 404 response...");
+                this.logger.LogWarning(ex, $"Can't get menu item. Not found menu item with id = {id}.");
                 return this.NotFound();
             }
             catch (Exception ex)
             {
-                this.logger.LogWarning(ex, $"Can't get menu item. Unexpected error. Sending 500 response...");
+                this.logger.LogError(ex, $"Can't get menu item. {ex.Message}");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
         }
@@ -102,18 +91,14 @@ namespace Web.Facade.Controllers
                 return this.StatusCode(400, new ErrorResponse(message));
             }
 
-            this.logger.LogInformation($"Starting to create menu item: {JsonSerializer.Serialize(menuItemDto)} ...");
-
             try
             {
                 var menuItem = await this.menuService.CreateMenuItem(menuItemDto);
-
-                this.logger.LogInformation($"The menu item created successfully! Menu item: {JsonSerializer.Serialize(menuItem)}. Sending the menu item in response...");
                 return this.StatusCode(201, menuItem);
             }
             catch (Exception ex)
             {
-                this.logger.LogWarning(ex, $"Can't create menu item. Unexpected error. Sending 500 response...");
+                this.logger.LogError(ex, $"Can't create menu item. {ex.Message}");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
         }
@@ -131,23 +116,19 @@ namespace Web.Facade.Controllers
                 return this.StatusCode(400, new ErrorResponse(message));
             }
 
-            this.logger.LogInformation($"Starting to update menu item with id = {id}. Menu item = {JsonSerializer.Serialize(menuItemDto)} ...");
-
             try
             {
                 var menuItem = await this.menuService.UpdateMenuItem(id, menuItemDto);
-
-                this.logger.LogInformation($"The menu item with id = {id} updated successfully! Menu item: {JsonSerializer.Serialize(menuItem)}. Sending the menu item in response...");
                 return this.Ok(menuItem);
             }
             catch (NotFoundException ex)
             {
-                this.logger.LogWarning(ex, $"Can't update menu item. Not found menu item with id = {id}. Sending 404 response...");
+                this.logger.LogWarning(ex, $"Can't update menu item. Not found menu item with id = {id}.");
                 return this.NotFound();
             }
             catch (Exception ex)
             {
-                this.logger.LogWarning(ex, $"Can't update menu item. Unexpected error. Sending 500 response...");
+                this.logger.LogError(ex, $"Can't update menu item. {ex.Message}");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
         }
