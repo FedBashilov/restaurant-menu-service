@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menu.Service", "Menu.Servic
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "Shared\Shared.shproj", "{F3062310-9D1A-4838-8829-71052FDF3327}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Service", "Messaging.Service\Messaging.Service.csproj", "{B444FDA7-7355-4433-AA32-8552AA075EE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{BD731EAB-202C-4040-BA79-A64019F97B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD731EAB-202C-4040-BA79-A64019F97B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BD731EAB-202C-4040-BA79-A64019F97B51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B444FDA7-7355-4433-AA32-8552AA075EE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B444FDA7-7355-4433-AA32-8552AA075EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B444FDA7-7355-4433-AA32-8552AA075EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B444FDA7-7355-4433-AA32-8552AA075EE2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
