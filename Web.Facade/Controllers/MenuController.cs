@@ -4,14 +4,13 @@ namespace Web.Facade.Controllers
 {
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
-    using System.Text.Json;
     using Infrastructure.Auth.Constants;
     using Infrastructure.Core.Models;
     using Menu.Service;
     using Menu.Service.Exceptions;
     using Menu.Service.Models.DTOs;
     using Menu.Service.Models.Responses;
-    using Microsoft.AspNetCore.Authentication;
+    using Messaging.Service;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Localization;
@@ -19,16 +18,19 @@ namespace Web.Facade.Controllers
     [Route("api/v1/menu")]
     public class MenuController : ControllerBase
     {
+        private readonly INewsMessagingService newsMessagingService;
         private readonly IMenuService menuService;
         private readonly IStringLocalizer<MenuController> localizer;
         private readonly ILogger<MenuController> logger;
 
         public MenuController(
             IMenuService menuService,
+            INewsMessagingService newsMessagingService,
             IStringLocalizer<MenuController> localizer,
             ILogger<MenuController> logger)
         {
             this.menuService = menuService;
+            this.newsMessagingService = newsMessagingService;
             this.localizer = localizer;
             this.logger = logger;
         }
@@ -94,6 +96,9 @@ namespace Web.Facade.Controllers
             try
             {
                 var menuItem = await this.menuService.CreateMenuItem(menuItemDto);
+
+                this.newsMessagingService.SendMessage(menuItem);
+
                 return this.StatusCode(201, menuItem);
             }
             catch (Exception ex)

@@ -5,6 +5,7 @@ namespace Web.Facade
     using Infrastructure.Auth.Extentions;
     using Infrastructure.Database.Extentions;
     using Menu.Service.Extentions;
+    using Messaging.Service.Extentions;
     using Microsoft.OpenApi.Models;
     using Web.Facade.Middlewares;
 
@@ -22,6 +23,7 @@ namespace Web.Facade
             services.AddAuthServices(this.Configuration);
             services.AddDatabaseServices(this.Configuration);
             services.AddMenuServices();
+            services.AddMessagingServices();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 

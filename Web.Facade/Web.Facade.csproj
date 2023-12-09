@@ -25,6 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure.Auth\Infrastructure.Auth.csproj" />
     <ProjectReference Include="..\Menu.Service\Menu.Service.csproj" />
+    <ProjectReference Include="..\Messaging.Service\Messaging.Service.csproj" />
   </ItemGroup>
 
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />
