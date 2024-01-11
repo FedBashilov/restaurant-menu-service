@@ -11,8 +11,7 @@
     "Web.Facade": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
-      "applicationUrl": "http://localhost:5291;https://localhost:7291",
+      "applicationUrl": "http://localhost:5291;https://localhost:7291;http://192.168.0.106:5291;https://192.168.0.106:7291",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
