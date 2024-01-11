@@ -9,13 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Core", "Infr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Database", "Infrastructure.Database\Infrastructure.Database.csproj", "{9B0E48DD-5118-4865-800C-29B32EF91A2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Auth", "Infrastructure.Auth\Infrastructure.Auth.csproj", "{F000CFD1-1900-4155-A1AE-CA7B949EB2EF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Menu.Service", "Menu.Service\Menu.Service.csproj", "{BD731EAB-202C-4040-BA79-A64019F97B51}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Shared", "Shared\Shared.shproj", "{F3062310-9D1A-4838-8829-71052FDF3327}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging.Service", "Messaging.Service\Messaging.Service.csproj", "{B444FDA7-7355-4433-AA32-8552AA075EE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messaging.Service", "Messaging.Service\Messaging.Service.csproj", "{B444FDA7-7355-4433-AA32-8552AA075EE2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudStorage.Service", "CloudStorage.Service\CloudStorage.Service.csproj", "{15BF4849-C4A4-4D5B-8742-916FCF048F30}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Auth", "Infrastructure.Auth\Infrastructure.Auth.csproj", "{FD1B1456-1A57-41F7-916C-009B0682FAFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +37,6 @@ Global
 		{9B0E48DD-5118-4865-800C-29B32EF91A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B0E48DD-5118-4865-800C-29B32EF91A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B0E48DD-5118-4865-800C-29B32EF91A2B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F000CFD1-1900-4155-A1AE-CA7B949EB2EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F000CFD1-1900-4155-A1AE-CA7B949EB2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F000CFD1-1900-4155-A1AE-CA7B949EB2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F000CFD1-1900-4155-A1AE-CA7B949EB2EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BD731EAB-202C-4040-BA79-A64019F97B51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BD731EAB-202C-4040-BA79-A64019F97B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BD731EAB-202C-4040-BA79-A64019F97B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,6 +45,14 @@ Global
 		{B444FDA7-7355-4433-AA32-8552AA075EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B444FDA7-7355-4433-AA32-8552AA075EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B444FDA7-7355-4433-AA32-8552AA075EE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15BF4849-C4A4-4D5B-8742-916FCF048F30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15BF4849-C4A4-4D5B-8742-916FCF048F30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15BF4849-C4A4-4D5B-8742-916FCF048F30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15BF4849-C4A4-4D5B-8742-916FCF048F30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD1B1456-1A57-41F7-916C-009B0682FAFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD1B1456-1A57-41F7-916C-009B0682FAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD1B1456-1A57-41F7-916C-009B0682FAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD1B1456-1A57-41F7-916C-009B0682FAFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,11 +61,12 @@ Global
 		SolutionGuid = {D85478F5-4939-4E19-B2E2-86E1E205B47C}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Shared\Shared.projitems*{15bf4849-c4a4-4d5b-8742-916fcf048f30}*SharedItemsImports = 5
 		Shared\Shared.projitems*{1fff9701-6002-404d-b06d-619e33b709d5}*SharedItemsImports = 5
 		Shared\Shared.projitems*{9b0e48dd-5118-4865-800c-29b32ef91a2b}*SharedItemsImports = 5
 		Shared\Shared.projitems*{bd731eab-202c-4040-ba79-a64019f97b51}*SharedItemsImports = 5
 		Shared\Shared.projitems*{e5fa9929-d9d6-4e8e-9753-1c0ca7faf35c}*SharedItemsImports = 5
-		Shared\Shared.projitems*{f000cfd1-1900-4155-a1ae-ca7b949eb2ef}*SharedItemsImports = 5
 		Shared\Shared.projitems*{f3062310-9d1a-4838-8829-71052fdf3327}*SharedItemsImports = 13
+		Shared\Shared.projitems*{fd1b1456-1a57-41f7-916c-009b0682fafe}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

@@ -2,6 +2,7 @@
 
 namespace Web.Facade
 {
+    using CloudStorage.Service.Extentions;
     using Infrastructure.Auth.Extentions;
     using Infrastructure.Database.Extentions;
     using Menu.Service.Extentions;
@@ -21,6 +22,7 @@ namespace Web.Facade
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthServices(this.Configuration);
+            services.AddCloudStorageServices(this.Configuration);
             services.AddDatabaseServices(this.Configuration);
             services.AddMenuServices();
             services.AddMessagingServices();

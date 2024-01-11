@@ -13,5 +13,7 @@ namespace Menu.Service.Models.DTOs
         public int Price { get; set; }
 
         public bool Visible { get; set; } = true;
+
+        public byte[]? Image { get; set; }
     }
 }

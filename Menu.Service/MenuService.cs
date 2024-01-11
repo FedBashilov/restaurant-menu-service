@@ -3,6 +3,7 @@
 namespace Menu.Service
 {
     using System.Linq;
+    using CloudStorage.Service;
     using Infrastructure.Core.Models;
     using Infrastructure.Database;
     using Menu.Service.Exceptions;
@@ -11,10 +12,14 @@ namespace Menu.Service
 
     public class MenuService : IMenuService
     {
+        private readonly ICloudStorageService cloudStorageService;
         private readonly IDbContextFactory<MenuDatabaseContext> dbCxtFactory;
 
-        public MenuService(IDbContextFactory<MenuDatabaseContext> dbCxtFactory)
+        public MenuService(
+            ICloudStorageService cloudStorageService,
+            IDbContextFactory<MenuDatabaseContext> dbCxtFactory)
         {
+            this.cloudStorageService = cloudStorageService;
             this.dbCxtFactory = dbCxtFactory;
         }
 
@@ -62,6 +67,15 @@ namespace Menu.Service
             };
 
             var menuItem = dbContext.Menu.Add(newItem).Entity;
+
+            await dbContext.SaveChangesAsync();
+
+            if (newItemDto.Image != default)
+            {
+                var imageUrl = await this.cloudStorageService.UploadFile(newItemDto.Image, "menuItem_" + menuItem.Id + ".jpg", "/menuItems");
+                menuItem.ImageUrl = imageUrl.ToString();
+            }
+
             await dbContext.SaveChangesAsync();
 
             return menuItem;
