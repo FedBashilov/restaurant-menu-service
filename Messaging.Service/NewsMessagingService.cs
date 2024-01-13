@@ -2,33 +2,37 @@
 
 namespace Messaging.Service
 {
+    using Microsoft.Extensions.Options;
     using RabbitMQ.Client;
     using System.Text;
     using System.Text.Json;
 
     public class NewsMessagingService : INewsMessagingService
     {
-        public IModel channel;
+        private readonly IModel channel;
+        private readonly RabbitMqSettings rbMqSettings;
 
-        public NewsMessagingService() {
-            var factory = new ConnectionFactory { HostName = "localhost" };
+        public NewsMessagingService(IOptions<RabbitMqSettings> rbMqSettings) {
+            this.rbMqSettings = rbMqSettings.Value;
+
+            var factory = new ConnectionFactory { HostName = this.rbMqSettings.HostName };
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
-            channel.ExchangeDeclare("menu_to_news_exchange", ExchangeType.Fanout);
+            channel.ExchangeDeclare(this.rbMqSettings.ExchangeName, ExchangeType.Fanout);
             channel.QueueDeclare(
-                "menu_to_news_queue",
+                this.rbMqSettings.QueueName,
                 durable: true,
                 exclusive: false,
                 autoDelete: false);
-            channel.QueueBind("menu_to_news_queue", "menu_to_news_exchange", "");
+            channel.QueueBind(this.rbMqSettings.QueueName, this.rbMqSettings.ExchangeName, "");
             this.channel = channel;
         }
+
         public void SendMessage<T>(T message)
         {
-            //отправить в очередь
             var json = JsonSerializer.Serialize(message);
             var body = Encoding.UTF8.GetBytes(json);
-            this.channel.BasicPublish("menu_to_news_exchange", "", null, body);
+            this.channel.BasicPublish(this.rbMqSettings.ExchangeName, "", null, body);
         }
     }
 }

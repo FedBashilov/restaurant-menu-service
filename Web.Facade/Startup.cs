@@ -24,8 +24,8 @@ namespace Web.Facade
             services.AddAuthServices(this.Configuration);
             services.AddCloudStorageServices(this.Configuration);
             services.AddDatabaseServices(this.Configuration);
+            services.AddMessagingServices(this.Configuration);
             services.AddMenuServices();
-            services.AddMessagingServices();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
