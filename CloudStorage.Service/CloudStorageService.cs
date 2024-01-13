@@ -2,40 +2,54 @@
 
 namespace CloudStorage.Service
 {
-    using Dropbox.Api;
-    using Dropbox.Api.Files;
+    using CloudinaryDotNet;
+    using CloudinaryDotNet.Actions;
+    using CloudStorage.Service.Exceptions;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
     public class CloudStorageService : ICloudStorageService
     {
-        private readonly DropboxSettings drxSettings;
+        private readonly CloudinarySettings cloudinarySettings;
+        private readonly Cloudinary cloudinary;
         private readonly ILogger<CloudStorageService> logger;
 
         public CloudStorageService(
-            IOptions<DropboxSettings> drxSettings,
+            IOptions<CloudinarySettings> cloudinarySettings,
             ILogger<CloudStorageService> logger)
         {
-            this.drxSettings = drxSettings.Value;
+            this.cloudinarySettings = cloudinarySettings.Value;
             this.logger = logger;
+
+            var account = new Account(
+                this.cloudinarySettings.Cloud,
+                this.cloudinarySettings.ApiKey,
+                this.cloudinarySettings.ApiSecret);
+            this.cloudinary = new Cloudinary(account);
+            this.cloudinary.Api.Secure = true;
         }
 
-        public async Task<Uri> UploadFile(byte[] file, string fileName, string folderName)
+        public async Task<Uri> UploadFile(byte[] file, string fileName, string folder)
         {
-            using var dbx = new DropboxClient(this.drxSettings.Token);
+            using var memoryStream = new MemoryStream();
+            memoryStream.Write(file, 0, file.Length);
+            memoryStream.Position = 0;
 
-            using var mem = new MemoryStream(file);
+            var uploadparams = new ImageUploadParams
+            {
+                File = new FileDescription(fileName, memoryStream),
+                Folder = folder,
+            };
 
-            var updated = await dbx.Files.UploadAsync(
-                $"/{folderName}/{fileName}",
-                WriteMode.Overwrite.Instance,
-                body: mem);
+            var result = await this.cloudinary.UploadAsync(uploadparams);
 
-            this.logger.LogInformation($"Uploaded {fileName} to Dropbox.");
+            if (result.Error != null)
+            {
+                this.logger.LogError($"Cloudinary error occured: {result.Error.Message}");
+                throw new UploadFileException($"Cloudinary error occured: {result.Error.Message}");
+            }
 
-            var tx = await dbx.Sharing.CreateSharedLinkWithSettingsAsync($"/{folderName}/{fileName}");
-
-            return new Uri(tx.Url);
+            return new Uri(result.SecureUrl.ToString());
         }
     }
 }

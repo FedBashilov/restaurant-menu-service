@@ -10,7 +10,7 @@ namespace CloudStorage.Service.Extentions
     {
         public static void AddCloudStorageServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<DropboxSettings>(configuration.GetSection("DropboxSettings"));
+            services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
             services.TryAddSingleton<ICloudStorageService, CloudStorageService>();
         }
     }
