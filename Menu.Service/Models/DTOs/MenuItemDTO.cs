@@ -9,6 +9,8 @@ namespace Menu.Service.Models.DTOs
         [Required(ErrorMessage = "The Name param is required")]
         public string? Name { get; set; }
 
+        public string? Description { get; set; }
+
         [Range(0, int.MaxValue, ErrorMessage = "The Price param must be positive")]
         public int Price { get; set; }
 
