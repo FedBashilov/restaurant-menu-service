@@ -25,7 +25,7 @@ namespace Menu.Service
 
         public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = true)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
             var selectQuery = onlyVisible ?
                 dbContext.Menu.Where(x => x.Visible == true) :
@@ -44,7 +44,7 @@ namespace Menu.Service
 
         public async Task<MenuItem> GetMenuItem(int id)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
             var menuItem = await dbContext.Menu.FirstAsync(x => x.Id == id);
 
@@ -58,7 +58,7 @@ namespace Menu.Service
 
         public async Task<MenuItem> CreateMenuItem(MenuItemDTO newItemDto)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
+            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
             var newItem = new MenuItem()
             {
@@ -66,13 +66,11 @@ namespace Menu.Service
                 Price = newItemDto.Price,
             };
 
-            var menuItem = dbContext.Menu.Add(newItem).Entity;
+            var menuItem = (await dbContext.Menu.AddAsync(newItem)).Entity;
 
-            await dbContext.SaveChangesAsync();
-
-            if (newItemDto.Image != default)
+            if (newItemDto.Image != default && newItemDto.Image.Length != 0)
             {
-                var imageUrl = await this.cloudStorageService.UploadFile(newItemDto.Image, "menuItem_" + menuItem.Id + ".jpg", "/menuItems");
+                var imageUrl = await this.cloudStorageService.UploadFile(newItemDto.Image, "menuItem", "/menuItems");
                 menuItem.ImageUrl = imageUrl.ToString();
             }
 
@@ -83,8 +81,8 @@ namespace Menu.Service
 
         public async Task<MenuItem> UpdateMenuItem(int id, MenuItemDTO newItemDto)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
-            if (!dbContext.Menu.Any(x => x.Id == id))
+            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
+            if (!await dbContext.Menu.AnyAsync(x => x.Id == id))
             {
                 throw new NotFoundException();
             }
@@ -104,12 +102,12 @@ namespace Menu.Service
 
         public async Task DeleteMenuItem(int id)
         {
-            using var dbContext = this.dbCxtFactory.CreateDbContext();
-            var menuItem = dbContext.Menu.FirstOrDefault(x => x.Id == id);
+            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
+            var menuItem = await dbContext.Menu.FirstOrDefaultAsync(x => x.Id == id);
 
             if (menuItem != null)
             {
-                dbContext.Remove(menuItem);
+                dbContext.Menu.Remove(menuItem);
                 await dbContext.SaveChangesAsync();
             }
         }

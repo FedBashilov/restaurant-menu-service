@@ -12,10 +12,16 @@ namespace Messaging.Service
         private readonly IModel channel;
         private readonly RabbitMqSettings rbMqSettings;
 
-        public NewsMessagingService(IOptions<RabbitMqSettings> rbMqSettings) {
+        public NewsMessagingService(IOptions<RabbitMqSettings> rbMqSettings) 
+        {
             this.rbMqSettings = rbMqSettings.Value;
 
-            var factory = new ConnectionFactory { HostName = this.rbMqSettings.HostName };
+            var factory = new ConnectionFactory { 
+                HostName = this.rbMqSettings.HostName,
+                UserName = this.rbMqSettings.UserName,
+                Password = this.rbMqSettings.UserPassword,
+                Port = this.rbMqSettings.HostPort,
+            };
             var connection = factory.CreateConnection();
             var channel = connection.CreateModel();
             channel.ExchangeDeclare(this.rbMqSettings.ExchangeName, ExchangeType.Fanout);

@@ -4,10 +4,16 @@ namespace Messaging.Service
 {
     public class RabbitMqSettings
     {
-        public string? ExchangeName;
+        public string? UserName { get; set; }
 
-        public string? QueueName;
+        public string? UserPassword { get; set; }
 
-        public string? HostName;
+        public string? HostName { get; set; }
+
+        public int HostPort { get; set; }
+
+        public string? ExchangeName { get; set; }
+
+        public string? QueueName { get; set; }
     }
 }
