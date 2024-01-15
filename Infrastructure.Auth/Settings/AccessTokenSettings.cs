@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Infrastructure.Auth
+namespace Infrastructure.Auth.Settings
 {
-    public record AccessTokenOptions
+    public record AccessTokenSettings
     {
         public string? SecretKey { get; init; }
 

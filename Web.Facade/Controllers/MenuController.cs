@@ -6,11 +6,11 @@ namespace Web.Facade.Controllers
     using System.Diagnostics.CodeAnalysis;
     using Infrastructure.Auth.Constants;
     using Infrastructure.Core.Models;
-    using Menu.Service;
     using Menu.Service.Exceptions;
+    using Menu.Service.Interfaces;
     using Menu.Service.Models.DTOs;
     using Menu.Service.Models.Responses;
-    using Messaging.Service;
+    using Messaging.Service.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Localization;

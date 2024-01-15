@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Menu.Service
+namespace Menu.Service.Interfaces
 {
     using Infrastructure.Core.Models;
     using Menu.Service.Models.DTOs;

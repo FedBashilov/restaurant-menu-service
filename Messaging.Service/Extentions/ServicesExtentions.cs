@@ -2,6 +2,8 @@
 
 namespace Messaging.Service.Extentions
 {
+    using Messaging.Service.Interfaces;
+    using Messaging.Service.Settings;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;

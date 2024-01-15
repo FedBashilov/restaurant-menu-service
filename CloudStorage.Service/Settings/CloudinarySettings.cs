@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace CloudStorage.Service
+namespace CloudStorage.Service.Settings
 {
     public record CloudinarySettings
     {

@@ -5,6 +5,8 @@ namespace CloudStorage.Service
     using CloudinaryDotNet;
     using CloudinaryDotNet.Actions;
     using CloudStorage.Service.Exceptions;
+    using CloudStorage.Service.Interfaces;
+    using CloudStorage.Service.Settings;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 

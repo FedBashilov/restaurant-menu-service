@@ -2,6 +2,8 @@
 
 namespace Messaging.Service
 {
+    using Messaging.Service.Interfaces;
+    using Messaging.Service.Settings;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
     using RabbitMQ.Client;

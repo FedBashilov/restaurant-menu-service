@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Messaging.Service
+namespace Messaging.Service.Settings
 {
     public record RabbitMqSettings
     {
@@ -10,7 +10,7 @@ namespace Messaging.Service
 
         public string? HostName { get; init; }
 
-        public int HostPort { get; init; }   
+        public int HostPort { get; init; }
 
         public string? ExchangeName { get; init; }
 

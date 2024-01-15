@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Messaging.Service
+namespace Messaging.Service.Interfaces
 {
     public interface INewsMessagingService
     {

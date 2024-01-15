@@ -3,10 +3,11 @@
 namespace Menu.Service
 {
     using System.Linq;
-    using CloudStorage.Service;
+    using CloudStorage.Service.Interfaces;
     using Infrastructure.Core.Models;
     using Infrastructure.Database;
     using Menu.Service.Exceptions;
+    using Menu.Service.Interfaces;
     using Menu.Service.Models.DTOs;
     using Microsoft.EntityFrameworkCore;
 
