@@ -2,18 +2,18 @@
 
 namespace Messaging.Service
 {
-    public class RabbitMqSettings
+    public record RabbitMqSettings
     {
-        public string? UserName { get; set; }
+        public string? UserName { get; init; }
 
-        public string? UserPassword { get; set; }
+        public string? UserPassword { get; init; }
 
-        public string? HostName { get; set; }
+        public string? HostName { get; init; }
 
-        public int HostPort { get; set; }
+        public int HostPort { get; init; }   
 
-        public string? ExchangeName { get; set; }
+        public string? ExchangeName { get; init; }
 
-        public string? QueueName { get; set; }
+        public string? QueueName { get; init; }
     }
 }

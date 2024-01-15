@@ -2,12 +2,12 @@
 
 namespace CloudStorage.Service
 {
-    public class CloudinarySettings
+    public record CloudinarySettings
     {
-        public string? Cloud { get; set; }
+        public string? Cloud { get; init; }
 
-        public string? ApiKey { get; set; }
+        public string? ApiKey { get; init; }
 
-        public string? ApiSecret { get; set; }
+        public string? ApiSecret { get; init; }
     }
 }

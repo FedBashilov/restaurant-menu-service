@@ -46,7 +46,7 @@ namespace Menu.Service
         {
             await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
-            var menuItem = await dbContext.Menu.FirstAsync(x => x.Id == id);
+            var menuItem = await dbContext.Menu.FirstOrDefaultAsync(x => x.Id == id);
 
             if (menuItem == null)
             {
