@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudStorage.Service", "Clo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Auth", "Infrastructure.Auth\Infrastructure.Auth.csproj", "{FD1B1456-1A57-41F7-916C-009B0682FAFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Category.Service", "Category.Service\Category.Service.csproj", "{856E6368-CA68-4C1E-A03C-D6D7B30A3FD3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{FD1B1456-1A57-41F7-916C-009B0682FAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD1B1456-1A57-41F7-916C-009B0682FAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD1B1456-1A57-41F7-916C-009B0682FAFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{856E6368-CA68-4C1E-A03C-D6D7B30A3FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{856E6368-CA68-4C1E-A03C-D6D7B30A3FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{856E6368-CA68-4C1E-A03C-D6D7B30A3FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{856E6368-CA68-4C1E-A03C-D6D7B30A3FD3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +69,7 @@ Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Shared\Shared.projitems*{15bf4849-c4a4-4d5b-8742-916fcf048f30}*SharedItemsImports = 5
 		Shared\Shared.projitems*{1fff9701-6002-404d-b06d-619e33b709d5}*SharedItemsImports = 5
+		Shared\Shared.projitems*{856e6368-ca68-4c1e-a03c-d6d7b30a3fd3}*SharedItemsImports = 5
 		Shared\Shared.projitems*{9b0e48dd-5118-4865-800c-29b32ef91a2b}*SharedItemsImports = 5
 		Shared\Shared.projitems*{b444fda7-7355-4433-aa32-8552aa075ee2}*SharedItemsImports = 5
 		Shared\Shared.projitems*{bd731eab-202c-4040-ba79-a64019f97b51}*SharedItemsImports = 5

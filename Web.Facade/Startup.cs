@@ -2,6 +2,7 @@
 
 namespace Web.Facade
 {
+    using Category.Service.Extentions;
     using CloudStorage.Service.Extentions;
     using Infrastructure.Auth.Extentions;
     using Infrastructure.Database.Extentions;
@@ -26,6 +27,7 @@ namespace Web.Facade
             services.AddDatabaseServices(this.Configuration);
             services.AddMessagingServices(this.Configuration);
             services.AddMenuServices();
+            services.AddCategoryServices();
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 

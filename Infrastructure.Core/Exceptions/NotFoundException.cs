@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Menu.Service.Exceptions
+namespace Shared.Exceptions
 {
     public class NotFoundException : Exception
     {

@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Category.Service\Category.Service.csproj" />
     <ProjectReference Include="..\Infrastructure.Auth\Infrastructure.Auth.csproj" />
     <ProjectReference Include="..\Menu.Service\Menu.Service.csproj" />
     <ProjectReference Include="..\Messaging.Service\Messaging.Service.csproj" />

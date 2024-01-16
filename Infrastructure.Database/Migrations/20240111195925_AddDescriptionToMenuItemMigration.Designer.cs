@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Database.Migrations
 {
-    [DbContext(typeof(MenuDatabaseContext))]
+    [DbContext(typeof(MenuServiceDatabaseContext))]
     [Migration("20240111195925_AddDescriptionToMenuItemMigration")]
     partial class AddDescriptionToMenuItemMigration
     {

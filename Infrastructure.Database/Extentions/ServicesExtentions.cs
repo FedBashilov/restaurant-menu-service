@@ -10,7 +10,7 @@ namespace Infrastructure.Database.Extentions
     {
         public static void AddDatabaseServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContextFactory<MenuDatabaseContext>(options =>
+            services.AddDbContextFactory<MenuServiceDatabaseContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DatabaseConnection"));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);

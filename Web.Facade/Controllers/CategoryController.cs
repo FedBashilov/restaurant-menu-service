@@ -4,42 +4,38 @@ namespace Web.Facade.Controllers
 {
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
+    using Category.Service.Interfaces;
+    using Category.Service.Models.DTOs;
     using Infrastructure.Auth.Constants;
     using Infrastructure.Core.Models;
-    using Menu.Service.Interfaces;
-    using Menu.Service.Models.DTOs;
-    using Messaging.Service.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Localization;
     using Shared.Exceptions;
     using Web.Facade.Responses;
 
-    [Route("api/v1/menu")]
-    public class MenuController : ControllerBase
+    [Route("api/v1/categories")]
+    public class CategoryController : ControllerBase
     {
-        private readonly INewsMessagingService newsMessagingService;
-        private readonly IMenuService menuService;
-        private readonly IStringLocalizer<MenuController> localizer;
-        private readonly ILogger<MenuController> logger;
+        private readonly ICategoryService categoryService;
+        private readonly IStringLocalizer<CategoryController> localizer;
+        private readonly ILogger<CategoryController> logger;
 
-        public MenuController(
-            IMenuService menuService,
-            INewsMessagingService newsMessagingService,
-            IStringLocalizer<MenuController> localizer,
-            ILogger<MenuController> logger)
+        public CategoryController(
+            ICategoryService categoryService,
+            IStringLocalizer<CategoryController> localizer,
+            ILogger<CategoryController> logger)
         {
-            this.menuService = menuService;
-            this.newsMessagingService = newsMessagingService;
+            this.categoryService = categoryService;
             this.localizer = localizer;
             this.logger = logger;
         }
 
         [Authorize(Roles = $"{UserRoles.Client}, {UserRoles.Cook}, {UserRoles.Admin}")]
         [HttpGet("")]
-        [ProducesResponseType(200, Type = typeof(List<MenuItem>))]
+        [ProducesResponseType(200, Type = typeof(List<Category>))]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> GetMenu(
+        public async Task<IActionResult> GetCategories(
             [FromQuery][Range(0, int.MaxValue)] int offset = 0,
             [FromQuery][Range(1, int.MaxValue)] int count = 100,
             [FromQuery] bool orderDesc = false,
@@ -47,46 +43,46 @@ namespace Web.Facade.Controllers
         {
             try
             {
-                var menu = await this.menuService.GetMenu(offset, count, orderDesc, onlyVisible);
-                return this.Ok(menu);
+                var categories = await this.categoryService.GetCategories(offset, count, orderDesc, onlyVisible);
+                return this.Ok(categories);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Can't get menu. {ex.Message}");
+                this.logger.LogError(ex, $"Can't get categories. {ex.Message}");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
         }
 
         [Authorize(Roles = $"{UserRoles.Client}, {UserRoles.Cook}, {UserRoles.Admin}")]
         [HttpGet("{id}")]
-        [ProducesResponseType(200, Type = typeof(MenuItem))]
+        [ProducesResponseType(200, Type = typeof(Category))]
         [ProducesResponseType(404)]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> GetMenuItem([FromRoute] int id)
+        public async Task<IActionResult> GetCategory([FromRoute] int id)
         {
             try
             {
-                var menuItem = await this.menuService.GetMenuItem(id);
-                return this.Ok(menuItem);
+                var category = await this.categoryService.GetCategory(id);
+                return this.Ok(category);
             }
             catch (NotFoundException ex)
             {
-                this.logger.LogWarning(ex, $"Can't get menu item. Not found menu item with id = {id}.");
+                this.logger.LogWarning(ex, $"Can't get category. Not found category with id = {id}.");
                 return this.NotFound();
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Can't get menu item. {ex.Message}");
+                this.logger.LogError(ex, $"Can't get category. {ex.Message}");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
         }
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpPost("")]
-        [ProducesResponseType(201, Type = typeof(MenuItem))]
+        [ProducesResponseType(201, Type = typeof(Category))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> CreateMenuItem([FromBody] MenuItemDTO menuItemDto)
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO categoryDto)
         {
             if (!this.IsInputModelValid(out var message))
             {
@@ -95,26 +91,24 @@ namespace Web.Facade.Controllers
 
             try
             {
-                var menuItem = await this.menuService.CreateMenuItem(menuItemDto);
+                var category = await this.categoryService.CreateCategory(categoryDto);
 
-                this.newsMessagingService.SendMessage(menuItem);
-
-                return this.StatusCode(201, menuItem);
+                return this.StatusCode(201, category);
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Can't create menu item. {ex.Message}");
+                this.logger.LogError(ex, $"Can't create category. {ex.Message}");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
         }
 
         [Authorize(Roles = UserRoles.Admin)]
         [HttpPut("{id}")]
-        [ProducesResponseType(200, Type = typeof(MenuItem))]
+        [ProducesResponseType(200, Type = typeof(Category))]
         [ProducesResponseType(400, Type = typeof(ErrorResponse))]
         [ProducesResponseType(404)]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
-        public async Task<IActionResult> UpdateMenuItem([FromRoute] int id, [FromBody] MenuItemDTO menuItemDto)
+        public async Task<IActionResult> UpdateCategory([FromRoute] int id, [FromBody] CategoryDTO categoryDto)
         {
             if (!this.IsInputModelValid(out var message))
             {
@@ -123,17 +117,17 @@ namespace Web.Facade.Controllers
 
             try
             {
-                var menuItem = await this.menuService.UpdateMenuItem(id, menuItemDto);
-                return this.Ok(menuItem);
+                var category = await this.categoryService.UpdateCategory(id, categoryDto);
+                return this.Ok(category);
             }
             catch (NotFoundException ex)
             {
-                this.logger.LogWarning(ex, $"Can't update menu item. Not found menu item with id = {id}.");
+                this.logger.LogWarning(ex, $"Can't update category. Not found category with id = {id}.");
                 return this.NotFound();
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, $"Can't update menu item. {ex.Message}");
+                this.logger.LogError(ex, $"Can't update category. {ex.Message}");
                 return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
             }
         }

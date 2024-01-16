@@ -6,19 +6,19 @@ namespace Menu.Service
     using CloudStorage.Service.Interfaces;
     using Infrastructure.Core.Models;
     using Infrastructure.Database;
-    using Menu.Service.Exceptions;
     using Menu.Service.Interfaces;
     using Menu.Service.Models.DTOs;
     using Microsoft.EntityFrameworkCore;
+    using Shared.Exceptions;
 
     public class MenuService : IMenuService
     {
         private readonly ICloudStorageService cloudStorageService;
-        private readonly IDbContextFactory<MenuDatabaseContext> dbCxtFactory;
+        private readonly IDbContextFactory<MenuServiceDatabaseContext> dbCxtFactory;
 
         public MenuService(
             ICloudStorageService cloudStorageService,
-            IDbContextFactory<MenuDatabaseContext> dbCxtFactory)
+            IDbContextFactory<MenuServiceDatabaseContext> dbCxtFactory)
         {
             this.cloudStorageService = cloudStorageService;
             this.dbCxtFactory = dbCxtFactory;

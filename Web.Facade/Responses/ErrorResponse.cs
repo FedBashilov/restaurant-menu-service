@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Menu.Service.Models.Responses
+namespace Web.Facade.Responses
 {
     public record ErrorResponse
     {
