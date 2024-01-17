@@ -24,17 +24,33 @@ namespace Menu.Service
             this.dbCxtFactory = dbCxtFactory;
         }
 
-        public async Task<List<MenuItem>> GetMenu(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = true)
+        public async Task<List<MenuItemResponse>> GetMenu(int offset = 0, int count = 100, IEnumerable<int>? categories = default, bool orderDesc = false, bool onlyVisible = true)
         {
             await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
-            var selectQuery = onlyVisible ?
-                dbContext.Menu.Where(x => x.Visible == true) :
-                dbContext.Menu;
+            var selectQuery =
+                dbContext.Menu.Select(m => new MenuItemResponse
+                {
+                    Id = m.Id,
+                    Name = m.Name,
+                    Description = m.Description,
+                    Price = m.Price,
+                    Visible = m.Visible,
+                    ImageUrl = m.ImageUrl,
+                    Categories = dbContext.MenuItemCategories
+                        .Where(c => c.MenuItemId == m.Id)
+                        .Select(c => c.CategoryId)
+                        .ToList(),
+                });
+
+            var whereQuery = onlyVisible ?
+                selectQuery.Where(x => x.Visible == true &&
+                                    (categories == default || x.Categories!.Any(x => categories.Any(y => y == x)))) :
+                selectQuery;
 
             var orderQuery = orderDesc ?
-                selectQuery.OrderByDescending(x => x.Id) :
-                selectQuery.OrderBy(x => x.Id);
+                whereQuery.OrderByDescending(x => x.Id) :
+                whereQuery.OrderBy(x => x.Id);
 
             var pageQuery = orderQuery.Skip(offset).Take(count);
 
@@ -43,11 +59,25 @@ namespace Menu.Service
             return menu;
         }
 
-        public async Task<MenuItem> GetMenuItem(int id)
+        public async Task<MenuItemResponse> GetMenuItem(int id)
         {
             await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
-            var menuItem = await dbContext.Menu.FirstOrDefaultAsync(x => x.Id == id);
+            var menuItemQuery = dbContext.Menu.Select(m => new MenuItemResponse
+            {
+                Id = m.Id,
+                Name = m.Name,
+                Description = m.Description,
+                Price = m.Price,
+                Visible = m.Visible,
+                ImageUrl = m.ImageUrl,
+                Categories = dbContext.MenuItemCategories
+                    .Where(c => c.MenuItemId == m.Id)
+                    .Select(c => c.CategoryId)
+                    .ToList(),
+            });
+
+            var menuItem = await menuItemQuery.FirstOrDefaultAsync(x => x.Id == id);
 
             if (menuItem == null)
             {
@@ -57,59 +87,128 @@ namespace Menu.Service
             return menuItem;
         }
 
-        public async Task<MenuItem> CreateMenuItem(MenuItemDTO newItemDto)
+        public async Task<MenuItemResponse> CreateMenuItem(MenuItemDTO newItemDto)
         {
             await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
+            await using var transaction = dbContext.Database.BeginTransaction();
 
-            var newItem = new MenuItem()
+            try
             {
-                Name = newItemDto.Name,
-                Price = newItemDto.Price,
-            };
+                var newItem = new MenuItem()
+                {
+                    Name = newItemDto.Name,
+                    Description = newItemDto.Description,
+                    Price = newItemDto.Price,
+                    Visible = newItemDto.Visible,
+                };
 
-            var menuItem = (await dbContext.Menu.AddAsync(newItem)).Entity;
+                if (newItemDto.Image != default && newItemDto.Image.Length != 0)
+                {
+                    var imageUrl = await this.cloudStorageService.UploadFile(newItemDto.Image, "menuItem", "/menuItems");
+                    newItem.ImageUrl = imageUrl.ToString();
+                }
 
-            if (newItemDto.Image != default && newItemDto.Image.Length != 0)
-            {
-                var imageUrl = await this.cloudStorageService.UploadFile(newItemDto.Image, "menuItem", "/menuItems");
-                menuItem.ImageUrl = imageUrl.ToString();
-            }
-
-            await dbContext.SaveChangesAsync();
-
-            return menuItem;
-        }
-
-        public async Task<MenuItem> UpdateMenuItem(int id, MenuItemDTO newItemDto)
-        {
-            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
-            if (!await dbContext.Menu.AnyAsync(x => x.Id == id))
-            {
-                throw new NotFoundException();
-            }
-
-            var newItem = new MenuItem()
-            {
-                Id = id,
-                Name = newItemDto.Name,
-                Price = newItemDto.Price,
-            };
-
-            var menuItem = dbContext.Menu.Update(newItem).Entity;
-            await dbContext.SaveChangesAsync();
-
-            return menuItem;
-        }
-
-        public async Task DeleteMenuItem(int id)
-        {
-            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
-            var menuItem = await dbContext.Menu.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (menuItem != null)
-            {
-                dbContext.Menu.Remove(menuItem);
+                var menuItem = (await dbContext.Menu.AddAsync(newItem)).Entity;
                 await dbContext.SaveChangesAsync();
+
+                var menuItemCategories = new List<MenuItemCategory>();
+                foreach (var item in newItemDto.Categories)
+                {
+                    menuItemCategories.Add(
+                        new MenuItemCategory
+                        {
+                            CategoryId = item,
+                            MenuItemId = menuItem.Id,
+                        });
+                }
+
+                // TODO: проверить есть ли такая категория ? или отловить эксепшен
+                await dbContext.MenuItemCategories.AddRangeAsync(menuItemCategories);
+                await dbContext.SaveChangesAsync();
+
+                transaction.Commit();
+
+                var menuItemResponse = new MenuItemResponse()
+                {
+                    Id = menuItem.Id,
+                    Name = menuItem.Name,
+                    Description = menuItem.Description,
+                    Price = menuItem.Price,
+                    Visible = menuItem.Visible,
+                    ImageUrl = menuItem.ImageUrl,
+                    Categories = newItemDto.Categories,
+                };
+
+                return menuItemResponse;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Create menu item error: {ex.Message}");
+            }
+        }
+
+        public async Task<MenuItemResponse> UpdateMenuItem(int id, MenuItemDTO newItemDto)
+        {
+            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
+            await using var transaction = dbContext.Database.BeginTransaction();
+
+            try
+            {
+                if (!await dbContext.Menu.AsNoTracking().AnyAsync(x => x.Id == id))
+                {
+                    throw new NotFoundException();
+                }
+
+                var newItem = new MenuItem()
+                {
+                    Id = id,
+                    Name = newItemDto.Name,
+                    Description = newItemDto.Description,
+                    Price = newItemDto.Price,
+                    Visible = newItemDto.Visible,
+                };
+
+                if (newItemDto.Image != default && newItemDto.Image.Length != 0)
+                {
+                    var imageUrl = await this.cloudStorageService.UploadFile(newItemDto.Image, "menuItem", "/menuItems");
+                    newItem.ImageUrl = imageUrl.ToString();
+                }
+
+                var menuItem = dbContext.Menu
+                    .Include(m => m.MenuItemCategories)
+                    .FirstOrDefault(m => m.Id == id);
+
+                dbContext.TryUpdateManyToMany<MenuItemCategory, int>(
+                    menuItem.MenuItemCategories,
+                    newItemDto.Categories
+                    .Select(c => new MenuItemCategory
+                    {
+                        MenuItemId = menuItem.Id,
+                        CategoryId = c,
+                    }),
+                    x => x.CategoryId);
+
+                dbContext.Menu.Update(menuItem);
+                await dbContext.SaveChangesAsync();
+
+                transaction.Commit();
+
+                var menuItemResponse = new MenuItemResponse()
+                {
+                    Id = menuItem.Id,
+                    Name = menuItem.Name,
+                    Description = menuItem.Description,
+                    Price = menuItem.Price,
+                    Visible = menuItem.Visible,
+                    ImageUrl = menuItem.ImageUrl,
+                    Categories = newItemDto.Categories,
+                };
+
+                return menuItemResponse;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Update menu item error: {ex.Message}");
             }
         }
     }

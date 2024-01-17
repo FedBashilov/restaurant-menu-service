@@ -37,17 +37,27 @@ namespace Web.Facade.Controllers
 
         [Authorize(Roles = $"{UserRoles.Client}, {UserRoles.Cook}, {UserRoles.Admin}")]
         [HttpGet("")]
-        [ProducesResponseType(200, Type = typeof(List<MenuItem>))]
+        [ProducesResponseType(200, Type = typeof(List<MenuItemResponse>))]
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetMenu(
             [FromQuery][Range(0, int.MaxValue)] int offset = 0,
             [FromQuery][Range(1, int.MaxValue)] int count = 100,
+            [FromQuery] string? categories = default,
             [FromQuery] bool orderDesc = false,
             [FromQuery] bool onlyVisible = true)
         {
             try
             {
-                var menu = await this.menuService.GetMenu(offset, count, orderDesc, onlyVisible);
+                var categoryIds = categories != default ? Array.ConvertAll(
+                        categories.Split(','),
+                        int.Parse) : default;
+
+                var menu = await this.menuService.GetMenu(
+                    offset,
+                    count,
+                    categoryIds,
+                    orderDesc,
+                    onlyVisible);
                 return this.Ok(menu);
             }
             catch (Exception ex)

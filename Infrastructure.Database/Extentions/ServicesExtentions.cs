@@ -12,6 +12,7 @@ namespace Infrastructure.Database.Extentions
         {
             services.AddDbContextFactory<MenuServiceDatabaseContext>(options =>
             {
+                options.EnableSensitiveDataLogging();
                 options.UseSqlServer(configuration.GetConnectionString("DatabaseConnection"));
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });

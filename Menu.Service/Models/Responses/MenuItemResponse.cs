@@ -1,22 +1,20 @@
 ﻿// Copyright (c) Fedor Bashilov. All rights reserved.
 
-namespace Menu.Service.Models.DTOs
+namespace Infrastructure.Core.Models
 {
-    using System.ComponentModel.DataAnnotations;
-
-    public record MenuItemDTO
+    public record MenuItemResponse
     {
-        [Required(ErrorMessage = "The Name param is required")]
+        public int Id { get; init; }
+
         public string? Name { get; init; }
 
         public string? Description { get; init; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "The Price param must be positive")]
         public int Price { get; init; }
 
         public bool Visible { get; init; } = true;
 
-        public byte[]? Image { get; init; }
+        public string? ImageUrl { get; set; }
 
         public IEnumerable<int>? Categories { get; init; }
     }

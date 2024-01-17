@@ -18,5 +18,7 @@ namespace Infrastructure.Core.Models
         public bool Visible { get; set; } = true;
 
         public string? ImageUrl { get; set; }
+
+        public IEnumerable<MenuItemCategory>? MenuItemCategories { get; set; }
     }
 }
