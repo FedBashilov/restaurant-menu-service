@@ -10,9 +10,9 @@ services:
         build: '../'
         environment:
             ConnectionStrings__DatabaseConnection: 'Data Source=mssql_server; Initial Catalog=MenuService; User ID=SA; Password=Adminadmin1@'
-            CloudinarySettings__Cloud: 'dlg0te4gv'
-            CloudinarySettings__ApiKey: '638166546729614'
-            CloudinarySettings__ApiSecret: 'RlwGaUbXr64epMtYqRq3pUa4L_I'
+            CloudinarySettings__Cloud: ''
+            CloudinarySettings__ApiKey: ''
+            CloudinarySettings__ApiSecret: ''
         networks:
             - app_bridge_network
 
