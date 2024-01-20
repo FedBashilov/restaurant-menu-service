@@ -19,7 +19,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudStorage.Service", "Clo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure.Auth", "Infrastructure.Auth\Infrastructure.Auth.csproj", "{FD1B1456-1A57-41F7-916C-009B0682FAFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Category.Service", "Category.Service\Category.Service.csproj", "{856E6368-CA68-4C1E-A03C-D6D7B30A3FD3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Category.Service", "Category.Service\Category.Service.csproj", "{856E6368-CA68-4C1E-A03C-D6D7B30A3FD3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5CE26243-DDCA-47AA-AFB7-BF38D52ABF8B}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose\common-services.yml = docker-compose\common-services.yml
+		docker-compose\docker-compose.yml = docker-compose\docker-compose.yml
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

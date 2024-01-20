@@ -44,9 +44,9 @@ namespace Messaging.Service
                 channel.QueueBind(this.rbMqSettings.QueueName, this.rbMqSettings.ExchangeName, "");
                 this.channel = channel;
             }
-            catch
+            catch (Exception e)
             {
-                this.logger.LogError("RabbitMQ initialization failed!");
+                this.logger.LogError("RabbitMQ initialization failed!" + e.Message);
             }
         }
 

@@ -9,19 +9,10 @@ services:
             - "5291:80"
         build: '../'
         environment:
-            ConnectionStrings__DatabaseConnection: 'Data Source=menu_db; Initial Catalog=MenuService; User ID=SA; Password=Adminadmin1@'
-        depends_on:
-            - db
-        networks:
-            - app_bridge_network
-    db:
-        image: "mcr.microsoft.com/mssql/server:2019-latest"
-        container_name: menu_db
-        ports:
-            - "1434:1433"
-        environment:
-            - ACCEPT_EULA=y
-            - MSSQL_SA_PASSWORD=Adminadmin1@
+            ConnectionStrings__DatabaseConnection: 'Data Source=mssql_server; Initial Catalog=MenuService; User ID=SA; Password=Adminadmin1@'
+            CloudinarySettings__Cloud: 'dlg0te4gv'
+            CloudinarySettings__ApiKey: '638166546729614'
+            CloudinarySettings__ApiSecret: 'RlwGaUbXr64epMtYqRq3pUa4L_I'
         networks:
             - app_bridge_network
 
