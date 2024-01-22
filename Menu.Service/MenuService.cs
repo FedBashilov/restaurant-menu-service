@@ -24,7 +24,13 @@ namespace Menu.Service
             this.dbCxtFactory = dbCxtFactory;
         }
 
-        public async Task<List<MenuItemResponse>> GetMenu(int offset = 0, int count = 100, IEnumerable<int>? categories = default, bool orderDesc = false, bool onlyVisible = true)
+        public async Task<List<MenuItemResponse>> GetMenu(
+            int offset = 0,
+            int count = 100,
+            IEnumerable<int>? categories = default,
+            IEnumerable<int>? ids = default,
+            bool orderDesc = false,
+            bool onlyVisible = true)
         {
             await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
@@ -43,10 +49,10 @@ namespace Menu.Service
                         .ToList(),
                 });
 
-            var whereQuery = onlyVisible ?
-                selectQuery.Where(x => x.Visible == true &&
-                                    (categories == default || x.Categories!.Any(x => categories.Any(y => y == x)))) :
-                selectQuery;
+            var whereQuery = selectQuery.Where(x =>
+                    (onlyVisible == default || x.Visible == true) &&
+                    (ids == default || ids.Any(id => id == x.Id)) &&
+                    (categories == default || x.Categories!.Any(x => categories.Any(y => y == x))));
 
             var orderQuery = orderDesc ?
                 whereQuery.OrderByDescending(x => x.Id) :
@@ -147,7 +153,7 @@ namespace Menu.Service
             }
         }
 
-        public async Task<MenuItemResponse> UpdateMenuItem(int id, MenuItemDTO newItemDto)
+        public async Task<MenuItemResponse> UpdateMenuItem(int id, MenuItemDTO menutemDto)
         {
             await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
             await using var transaction = dbContext.Database.BeginTransaction();
@@ -159,28 +165,28 @@ namespace Menu.Service
                     throw new NotFoundException();
                 }
 
-                var newItem = new MenuItem()
+                var menuItem = new MenuItem()
                 {
                     Id = id,
-                    Name = newItemDto.Name,
-                    Description = newItemDto.Description,
-                    Price = newItemDto.Price,
-                    Visible = newItemDto.Visible,
+                    Name = menutemDto.Name,
+                    Description = menutemDto.Description,
+                    Price = menutemDto.Price,
+                    Visible = menutemDto.Visible,
                 };
 
-                if (newItemDto.Image != default && newItemDto.Image.Length != 0)
+                if (menutemDto.Image != default && menutemDto.Image.Length != 0)
                 {
-                    var imageUrl = await this.cloudStorageService.UploadFile(newItemDto.Image, "menuItem", "/menuItems");
-                    newItem.ImageUrl = imageUrl.ToString();
+                    var imageUrl = await this.cloudStorageService.UploadFile(menutemDto.Image, "menuItem", "/menuItems");
+                    menuItem.ImageUrl = imageUrl.ToString();
                 }
 
-                var menuItem = dbContext.Menu
+                var menuItemCategories = dbContext.Menu.AsNoTracking()
                     .Include(m => m.MenuItemCategories)
-                    .FirstOrDefault(m => m.Id == id);
+                    .FirstOrDefault(m => m.Id == id)?.MenuItemCategories;
 
-                dbContext.TryUpdateManyToMany<MenuItemCategory, int>(
-                    menuItem.MenuItemCategories,
-                    newItemDto.Categories
+                dbContext.TryUpdateManyToMany(
+                    menuItemCategories,
+                    menutemDto.Categories
                     .Select(c => new MenuItemCategory
                     {
                         MenuItemId = menuItem.Id,
@@ -201,7 +207,7 @@ namespace Menu.Service
                     Price = menuItem.Price,
                     Visible = menuItem.Visible,
                     ImageUrl = menuItem.ImageUrl,
-                    Categories = newItemDto.Categories,
+                    Categories = menutemDto.Categories,
                 };
 
                 return menuItemResponse;

@@ -11,6 +11,7 @@ namespace Menu.Service.Interfaces
             int offset = 0,
             int count = 100,
             IEnumerable<int>? categories = default,
+            IEnumerable<int>? ids = default,
             bool orderDesc = false,
             bool onlyVisible = true);
 

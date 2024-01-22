@@ -43,22 +43,34 @@ namespace Web.Facade.Controllers
             [FromQuery][Range(0, int.MaxValue)] int offset = 0,
             [FromQuery][Range(1, int.MaxValue)] int count = 100,
             [FromQuery] string? categories = default,
+            [FromQuery] string? ids = default,
             [FromQuery] bool orderDesc = false,
             [FromQuery] bool onlyVisible = true)
         {
             try
             {
                 var categoryIds = categories != default ? Array.ConvertAll(
-                        categories.Split(','),
-                        int.Parse) : default;
+                    categories.Split(','),
+                    int.Parse) : default;
+
+                var menuItemIds = ids != default ? Array.ConvertAll(
+                    ids.Split(','),
+                    int.Parse) : default;
 
                 var menu = await this.menuService.GetMenu(
                     offset,
                     count,
                     categoryIds,
+                    menuItemIds,
                     orderDesc,
                     onlyVisible);
+
                 return this.Ok(menu);
+            }
+            catch (FormatException ex)
+            {
+                this.logger.LogError(ex, $"Can't get menu. {ex.Message}");
+                return this.StatusCode(400, new ErrorResponse("Invalid request query parameter"));
             }
             catch (Exception ex)
             {
