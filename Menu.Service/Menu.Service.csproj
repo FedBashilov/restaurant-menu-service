@@ -21,6 +21,7 @@
     <ProjectReference Include="..\CloudStorage.Service\CloudStorage.Service.csproj" />
     <ProjectReference Include="..\Infrastructure.Core\Infrastructure.Core.csproj" />
     <ProjectReference Include="..\Infrastructure.Database\Infrastructure.Database.csproj" />
+    <ProjectReference Include="..\Messaging.Service\Messaging.Service.csproj" />
   </ItemGroup>
 
   <Import Project="..\Shared\Shared.projitems" Label="Shared" />

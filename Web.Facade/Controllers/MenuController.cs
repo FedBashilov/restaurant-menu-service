@@ -12,25 +12,21 @@ namespace Web.Facade.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Localization;
-    using Shared.Exceptions;
     using Web.Facade.Responses;
 
     [Route("api/v1/menu")]
     public class MenuController : ControllerBase
     {
-        private readonly INewsMessagingService newsMessagingService;
         private readonly IMenuService menuService;
-        private readonly IStringLocalizer<MenuController> localizer;
+        private readonly IStringLocalizer<SharedResources> localizer;
         private readonly ILogger<MenuController> logger;
 
         public MenuController(
             IMenuService menuService,
-            INewsMessagingService newsMessagingService,
-            IStringLocalizer<MenuController> localizer,
+            IStringLocalizer<SharedResources> localizer,
             ILogger<MenuController> logger)
         {
             this.menuService = menuService;
-            this.newsMessagingService = newsMessagingService;
             this.localizer = localizer;
             this.logger = logger;
         }
@@ -72,11 +68,6 @@ namespace Web.Facade.Controllers
                 this.logger.LogError(ex, $"Can't get menu. {ex.Message}");
                 return this.StatusCode(400, new ErrorResponse("Invalid request query parameter"));
             }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"Can't get menu. {ex.Message}");
-                return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
-            }
         }
 
         [Authorize(Roles = $"{UserRoles.Client}, {UserRoles.Cook}, {UserRoles.Admin}")]
@@ -86,21 +77,9 @@ namespace Web.Facade.Controllers
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetMenuItem([FromRoute] int id)
         {
-            try
-            {
-                var menuItem = await this.menuService.GetMenuItem(id);
-                return this.Ok(menuItem);
-            }
-            catch (NotFoundException ex)
-            {
-                this.logger.LogWarning(ex, $"Can't get menu item. Not found menu item with id = {id}.");
-                return this.NotFound();
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"Can't get menu item. {ex.Message}");
-                return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
-            }
+            var menuItem = await this.menuService.GetMenuItem(id);
+
+            return this.Ok(menuItem);
         }
 
         [Authorize(Roles = UserRoles.Admin)]
@@ -115,19 +94,9 @@ namespace Web.Facade.Controllers
                 return this.StatusCode(400, new ErrorResponse(message));
             }
 
-            try
-            {
-                var menuItem = await this.menuService.CreateMenuItem(menuItemDto);
+            var menuItem = await this.menuService.CreateMenuItem(menuItemDto);
 
-                this.newsMessagingService.SendMessage(menuItem);
-
-                return this.StatusCode(201, menuItem);
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"Can't create menu item. {ex.Message}");
-                return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
-            }
+            return this.StatusCode(201, menuItem);
         }
 
         [Authorize(Roles = UserRoles.Admin)]
@@ -143,21 +112,9 @@ namespace Web.Facade.Controllers
                 return this.StatusCode(400, new ErrorResponse(message));
             }
 
-            try
-            {
-                var menuItem = await this.menuService.UpdateMenuItem(id, menuItemDto);
-                return this.Ok(menuItem);
-            }
-            catch (NotFoundException ex)
-            {
-                this.logger.LogWarning(ex, $"Can't update menu item. Not found menu item with id = {id}.");
-                return this.NotFound();
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"Can't update menu item. {ex.Message}");
-                return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
-            }
+            var menuItem = await this.menuService.UpdateMenuItem(id, menuItemDto);
+
+            return this.Ok(menuItem);
         }
 
         private bool IsInputModelValid([NotNullWhen(false)]out string? errorMessage)
@@ -166,7 +123,7 @@ namespace Web.Facade.Controllers
             {
                 errorMessage = this.ModelState
                     .SelectMany(state => state.Value!.Errors)
-                    .Aggregate(string.Empty, (current, error) => current + (error.ErrorMessage + ". "));
+                    .Aggregate(string.Empty, (current, error) => current + (this.localizer[error.ErrorMessage].Value + ". "));
 
                 return false;
             }

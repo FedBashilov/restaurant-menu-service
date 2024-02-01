@@ -11,19 +11,18 @@ namespace Web.Facade.Controllers
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Localization;
-    using Shared.Exceptions;
     using Web.Facade.Responses;
 
     [Route("api/v1/categories")]
     public class CategoryController : ControllerBase
     {
         private readonly ICategoryService categoryService;
-        private readonly IStringLocalizer<CategoryController> localizer;
+        private readonly IStringLocalizer<SharedResources> localizer;
         private readonly ILogger<CategoryController> logger;
 
         public CategoryController(
             ICategoryService categoryService,
-            IStringLocalizer<CategoryController> localizer,
+            IStringLocalizer<SharedResources> localizer,
             ILogger<CategoryController> logger)
         {
             this.categoryService = categoryService;
@@ -41,16 +40,9 @@ namespace Web.Facade.Controllers
             [FromQuery] bool orderDesc = false,
             [FromQuery] bool onlyVisible = true)
         {
-            try
-            {
-                var categories = await this.categoryService.GetCategories(offset, count, orderDesc, onlyVisible);
-                return this.Ok(categories);
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"Can't get categories. {ex.Message}");
-                return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
-            }
+            var categories = await this.categoryService.GetCategories(offset, count, orderDesc, onlyVisible);
+
+            return this.Ok(categories);
         }
 
         [Authorize(Roles = $"{UserRoles.Client}, {UserRoles.Cook}, {UserRoles.Admin}")]
@@ -60,21 +52,9 @@ namespace Web.Facade.Controllers
         [ProducesResponseType(500, Type = typeof(ErrorResponse))]
         public async Task<IActionResult> GetCategory([FromRoute] int id)
         {
-            try
-            {
-                var category = await this.categoryService.GetCategory(id);
-                return this.Ok(category);
-            }
-            catch (NotFoundException ex)
-            {
-                this.logger.LogWarning(ex, $"Can't get category. Not found category with id = {id}.");
-                return this.NotFound();
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"Can't get category. {ex.Message}");
-                return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
-            }
+            var category = await this.categoryService.GetCategory(id);
+
+            return this.Ok(category);
         }
 
         [Authorize(Roles = UserRoles.Admin)]
@@ -89,17 +69,9 @@ namespace Web.Facade.Controllers
                 return this.StatusCode(400, new ErrorResponse(message));
             }
 
-            try
-            {
-                var category = await this.categoryService.CreateCategory(categoryDto);
+            var category = await this.categoryService.CreateCategory(categoryDto);
 
-                return this.StatusCode(201, category);
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"Can't create category. {ex.Message}");
-                return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
-            }
+            return this.StatusCode(201, category);
         }
 
         [Authorize(Roles = UserRoles.Admin)]
@@ -115,21 +87,9 @@ namespace Web.Facade.Controllers
                 return this.StatusCode(400, new ErrorResponse(message));
             }
 
-            try
-            {
-                var category = await this.categoryService.UpdateCategory(id, categoryDto);
-                return this.Ok(category);
-            }
-            catch (NotFoundException ex)
-            {
-                this.logger.LogWarning(ex, $"Can't update category. Not found category with id = {id}.");
-                return this.NotFound();
-            }
-            catch (Exception ex)
-            {
-                this.logger.LogError(ex, $"Can't update category. {ex.Message}");
-                return this.StatusCode(500, new ErrorResponse(this.localizer["Unexpected error"].Value));
-            }
+            var category = await this.categoryService.UpdateCategory(id, categoryDto);
+
+            return this.Ok(category);
         }
 
         private bool IsInputModelValid([NotNullWhen(false)]out string? errorMessage)
@@ -138,7 +98,7 @@ namespace Web.Facade.Controllers
             {
                 errorMessage = this.ModelState
                     .SelectMany(state => state.Value!.Errors)
-                    .Aggregate(string.Empty, (current, error) => current + (error.ErrorMessage + ". "));
+                    .Aggregate(string.Empty, (current, error) => current + (this.localizer[error.ErrorMessage].Value + ". "));
 
                 return false;
             }

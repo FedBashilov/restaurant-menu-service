@@ -6,21 +6,25 @@ namespace Menu.Service
     using CloudStorage.Service.Interfaces;
     using Infrastructure.Core.Models;
     using Infrastructure.Database;
+    using Menu.Service.Exceptions;
     using Menu.Service.Interfaces;
     using Menu.Service.Models.DTOs;
+    using Messaging.Service.Interfaces;
     using Microsoft.EntityFrameworkCore;
-    using Shared.Exceptions;
 
     public class MenuService : IMenuService
     {
         private readonly ICloudStorageService cloudStorageService;
+        private readonly INewsMessagingService newsMessagingService;
         private readonly IDbContextFactory<MenuServiceDatabaseContext> dbCxtFactory;
 
         public MenuService(
             ICloudStorageService cloudStorageService,
+            INewsMessagingService newsMessagingService,
             IDbContextFactory<MenuServiceDatabaseContext> dbCxtFactory)
         {
             this.cloudStorageService = cloudStorageService;
+            this.newsMessagingService = newsMessagingService;
             this.dbCxtFactory = dbCxtFactory;
         }
 
@@ -87,7 +91,7 @@ namespace Menu.Service
 
             if (menuItem == null)
             {
-                throw new NotFoundException($"Not found menuItem with id = {id} while executing GetMenuItem method");
+                throw new MenuItemNotFoundException($"Not found menuItem with id = {id} while executing GetMenuItem method");
             }
 
             return menuItem;
@@ -145,11 +149,13 @@ namespace Menu.Service
                     Categories = newItemDto.Categories,
                 };
 
+                this.newsMessagingService.SendMessage(menuItemResponse);
+
                 return menuItemResponse;
             }
             catch (Exception ex)
             {
-                throw new Exception($"Create menu item error: {ex.Message}");
+                throw new CreateMenuItemFailedException(ex.Message);
             }
         }
 
@@ -162,7 +168,7 @@ namespace Menu.Service
             {
                 if (!await dbContext.Menu.AsNoTracking().AnyAsync(x => x.Id == id))
                 {
-                    throw new NotFoundException();
+                    throw new MenuItemNotFoundException();
                 }
 
                 var menuItem = new MenuItem()
@@ -214,7 +220,7 @@ namespace Menu.Service
             }
             catch (Exception ex)
             {
-                throw new Exception($"Update menu item error: {ex.Message}");
+                throw new UpdateMenuItemFailedException(ex.Message);
             }
         }
     }

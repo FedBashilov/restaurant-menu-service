@@ -71,9 +71,6 @@ namespace Web.Facade
                 app.UseSwaggerUI();
             }
 
-            app.UseMiddleware<HttpRequestBodyMiddleware>();
-            app.UseMiddleware<UnhandledExceptionMiddleware>();
-
             var supportedCultures = new[] { "en-US", "ru-RU" };
             var localizationOptions =
                 new RequestLocalizationOptions().SetDefaultCulture(supportedCultures[0])
@@ -81,6 +78,9 @@ namespace Web.Facade
                 .AddSupportedUICultures(supportedCultures);
 
             app.UseRequestLocalization(localizationOptions);
+
+            app.UseMiddleware<HttpRequestBodyMiddleware>();
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
             app.UseRouting();

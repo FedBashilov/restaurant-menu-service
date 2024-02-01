@@ -3,12 +3,12 @@
 namespace Category.Service
 {
     using System.Linq;
+    using Category.Service.Exceptions;
     using Category.Service.Interfaces;
     using Category.Service.Models.DTOs;
     using Infrastructure.Core.Models;
     using Infrastructure.Database;
     using Microsoft.EntityFrameworkCore;
-    using Shared.Exceptions;
 
     public class CategoryService : ICategoryService
     {
@@ -47,7 +47,7 @@ namespace Category.Service
 
             if (category == null)
             {
-                throw new NotFoundException($"Not found category with id = {id} while executing GetCategory method");
+                throw new CategoryNotFoundException($"Not found category with id = {id} while executing GetCategory method");
             }
 
             return category;
@@ -75,20 +75,27 @@ namespace Category.Service
             await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
             if (!await dbContext.Categories.AnyAsync(x => x.Id == id))
             {
-                throw new NotFoundException();
+                throw new CategoryNotFoundException();
             }
 
-            var newItem = new Category()
+            try
             {
-                Id = id,
-                Name = newItemDto.Name,
-                Visible = newItemDto.Visible,
-            };
+                var newItem = new Category()
+                {
+                    Id = id,
+                    Name = newItemDto.Name,
+                    Visible = newItemDto.Visible,
+                };
 
-            var category = dbContext.Categories.Update(newItem).Entity;
-            await dbContext.SaveChangesAsync();
+                var category = dbContext.Categories.Update(newItem).Entity;
+                await dbContext.SaveChangesAsync();
 
-            return category;
+                return category;
+            }
+            catch (Exception ex)
+            {
+                throw new UpdateCategoryFailedException(ex.Message);
+            }
         }
 
         public async Task DeleteCategory(int id)

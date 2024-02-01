@@ -10,6 +10,7 @@ services:
         build: '../'
         environment:
             ConnectionStrings__DatabaseConnection: 'Data Source=mssql_server; Initial Catalog=MenuService; User ID=SA; Password=Adminadmin1@'
+            RabbitMqSettings__HostName: 'rabbitMQ'
             CloudinarySettings__Cloud: ''
             CloudinarySettings__ApiKey: ''
             CloudinarySettings__ApiSecret: ''
