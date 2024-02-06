@@ -6,6 +6,7 @@ namespace Category.Service
     using Category.Service.Exceptions;
     using Category.Service.Interfaces;
     using Category.Service.Models.DTOs;
+    using Infrastructure.Core.Exceptions;
     using Infrastructure.Core.Models;
     using Infrastructure.Database;
     using Microsoft.EntityFrameworkCore;
@@ -22,91 +23,109 @@ namespace Category.Service
 
         public async Task<List<Category>> GetCategories(int offset = 0, int count = 100, bool orderDesc = false, bool onlyVisible = true)
         {
-            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
+            try
+            {
+                await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
-            var selectQuery = onlyVisible ?
-                dbContext.Categories.Where(x => x.Visible == true) :
-                dbContext.Categories;
+                var selectQuery = onlyVisible ?
+                    dbContext.Categories.Where(x => x.Visible == true) :
+                    dbContext.Categories;
 
-            var orderQuery = orderDesc ?
-                selectQuery.OrderByDescending(x => x.Id) :
-                selectQuery.OrderBy(x => x.Id);
+                var orderQuery = orderDesc ?
+                    selectQuery.OrderByDescending(x => x.Id) :
+                    selectQuery.OrderBy(x => x.Id);
 
-            var pageQuery = orderQuery.Skip(offset).Take(count);
+                var pageQuery = orderQuery.Skip(offset).Take(count);
 
-            var categories = await pageQuery.ToListAsync();
+                var categories = await pageQuery.ToListAsync();
 
-            return categories;
+                return categories;
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException("Failed to get Categories", ex);
+            }
         }
 
         public async Task<Category> GetCategory(int id)
         {
-            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
-
-            var category = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (category == null)
+            try
             {
-                throw new CategoryNotFoundException($"Not found category with id = {id} while executing GetCategory method");
-            }
+                await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
 
-            return category;
+                var category = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
+
+                if (category == null)
+                {
+                    throw new CategoryNotFoundException($"Not found category with id = {id} while executing GetCategory method");
+                }
+
+                return category;
+            }
+            catch (CategoryNotFoundException ex)
+            {
+                throw new NotFoundException("Category Not found", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException("Failed to get Category", ex);
+            }
         }
 
         public async Task<Category> CreateCategory(CategoryDTO newItemDto)
         {
-            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
-
-            var newItem = new Category()
-            {
-                Name = newItemDto.Name,
-                Visible = newItemDto.Visible,
-            };
-
-            var category = (await dbContext.Categories.AddAsync(newItem)).Entity;
-
-            await dbContext.SaveChangesAsync();
-
-            return category;
-        }
-
-        public async Task<Category> UpdateCategory(int id, CategoryDTO newItemDto)
-        {
-            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
-            if (!await dbContext.Categories.AnyAsync(x => x.Id == id))
-            {
-                throw new CategoryNotFoundException();
-            }
-
             try
             {
+                await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
+
                 var newItem = new Category()
                 {
-                    Id = id,
                     Name = newItemDto.Name,
                     Visible = newItemDto.Visible,
                 };
 
-                var category = dbContext.Categories.Update(newItem).Entity;
+                var category = (await dbContext.Categories.AddAsync(newItem)).Entity;
+
                 await dbContext.SaveChangesAsync();
 
                 return category;
             }
             catch (Exception ex)
             {
-                throw new UpdateCategoryFailedException(ex.Message);
+                throw new InternalServerErrorException("Failed to create Category", ex);
             }
         }
 
-        public async Task DeleteCategory(int id)
+        public async Task<Category> UpdateCategory(int id, CategoryDTO categoryDto)
         {
-            await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
-            var category = await dbContext.Categories.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (category != null)
+            try
             {
-                dbContext.Categories.Remove(category);
+                await using var dbContext = await this.dbCxtFactory.CreateDbContextAsync();
+
+                var category = await dbContext.Categories
+                    .FirstOrDefaultAsync(c => c.Id == id);
+
+                if (category == default)
+                {
+                    throw new CategoryNotFoundException();
+                }
+
+                category.Name = categoryDto.Name ?? category.Name;
+                category.Visible = categoryDto.Visible;
+
+                dbContext.Categories.Update(category);
+
                 await dbContext.SaveChangesAsync();
+
+                return category;
+            }
+            catch (CategoryNotFoundException ex)
+            {
+                throw new NotFoundException("Category Not found", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InternalServerErrorException("Failed to update Category", ex);
             }
         }
     }

@@ -3,6 +3,7 @@
 namespace Infrastructure.Core.Models
 {
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class MenuItem
     {
@@ -17,7 +18,10 @@ namespace Infrastructure.Core.Models
 
         public bool Visible { get; set; } = true;
 
-        public string? ImageUrl { get; set; }
+        [ForeignKey("CloudFile")]
+        public int? ImageId { get; set; }
+
+        public CloudFile? Image { get; set; }
 
         public IEnumerable<MenuItemCategory>? MenuItemCategories { get; set; }
     }

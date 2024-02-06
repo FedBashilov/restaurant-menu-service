@@ -8,7 +8,6 @@ namespace Web.Facade.Controllers
     using Infrastructure.Core.Models;
     using Menu.Service.Interfaces;
     using Menu.Service.Models.DTOs;
-    using Messaging.Service.Interfaces;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Localization;

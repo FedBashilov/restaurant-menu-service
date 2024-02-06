@@ -2,11 +2,14 @@
 
 namespace CloudStorage.Service
 {
+    using System.IO;
     using CloudinaryDotNet;
     using CloudinaryDotNet.Actions;
     using CloudStorage.Service.Exceptions;
+    using CloudStorage.Service.Extentions;
     using CloudStorage.Service.Interfaces;
     using CloudStorage.Service.Settings;
+    using Infrastructure.Core.Models;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
@@ -30,7 +33,7 @@ namespace CloudStorage.Service
             this.cldStorage.Api.Secure = true;
         }
 
-        public async Task<Uri> UploadFile(byte[] file, string fileName, string folder)
+        public async Task<CloudFile> UploadFile(byte[] file, string fileName, string folder)
         {
             await using var memoryStream = new MemoryStream();
 
@@ -50,10 +53,33 @@ namespace CloudStorage.Service
             if (result.Error != null)
             {
                 this.logger.LogError($"Cloudinary error occured: {result.Error.Message}");
-                throw new UploadFileException($"Cloudinary error occured: {result.Error.Message}");
+                throw new UploadFileFailedException($"Cloudinary error occured: {result.Error.Message}");
             }
 
-            return new Uri(result.SecureUrl.ToString());
+            var newFile = new CloudFile()
+            {
+                PublicId = result.PublicId,
+                ResourceType = result.ResourceType,
+                Url = result.SecureUrl.ToString(),
+            };
+
+            return newFile;
+        }
+
+        public async Task RemoveFile(string publicId, string fileType)
+        {
+            var uploadparams = new DeletionParams(publicId)
+            {
+                ResourceType = fileType.ToResourceType(),
+            };
+
+            var result = await this.cldStorage.DestroyAsync(uploadparams);
+
+            if (result.Error != null)
+            {
+                this.logger.LogError($"Cloudinary error occured: {result.Error.Message}");
+                throw new RemoveFileFailedException($"Cloudinary error occured: {result.Error.Message}");
+            }
         }
     }
 }

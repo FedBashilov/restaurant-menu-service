@@ -2,8 +2,12 @@
 
 namespace CloudStorage.Service.Interfaces
 {
+    using Infrastructure.Core.Models;
+
     public interface ICloudStorageService
     {
-        Task<Uri> UploadFile(byte[] file, string fileName, string folder);
+        Task<CloudFile> UploadFile(byte[] file, string fileName, string folder);
+
+        Task RemoveFile(string publicId, string fileType);
     }
 }

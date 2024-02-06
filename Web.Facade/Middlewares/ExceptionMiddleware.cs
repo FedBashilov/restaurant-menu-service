@@ -3,10 +3,8 @@
 namespace Web.Facade.Middlewares
 {
     using System.Net;
-    using System.Text;
     using System.Threading.Tasks;
-    using Category.Service.Exceptions;
-    using Menu.Service.Exceptions;
+    using Infrastructure.Core.Exceptions;
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Localization;
     using Microsoft.Extensions.Logging;
@@ -43,7 +41,11 @@ namespace Web.Facade.Middlewares
 
                 var (status, message) = this.GetResponse(exception);
                 response.StatusCode = (int)status;
-                await response.WriteAsJsonAsync(new ErrorResponse(message));
+
+                if (response.StatusCode != 404)
+                {
+                    await response.WriteAsJsonAsync(new ErrorResponse(message));
+                }
             }
         }
 
@@ -53,16 +55,20 @@ namespace Web.Facade.Middlewares
             var msg = string.Empty;
             switch (ex)
             {
-                case CategoryNotFoundException or MenuItemNotFoundException:
+                case BadRequestException:
+                    code = HttpStatusCode.BadRequest;
+                    msg = this.localizer[ex.Message].Value;
+                    break;
+                case NotFoundException:
                     code = HttpStatusCode.NotFound;
                     break;
-                case UpdateCategoryFailedException or UpdateMenuItemFailedException:
-                    msg = this.localizer["Unexpected server error"].Value;
+                case InternalServerErrorException:
                     code = HttpStatusCode.InternalServerError;
+                    msg = this.localizer[ex.Message].Value;
                     break;
                 default:
-                    msg = this.localizer["Unexpected server error"].Value;
                     code = HttpStatusCode.InternalServerError;
+                    msg = this.localizer["Unexpected server error"].Value;
                     break;
             }
 

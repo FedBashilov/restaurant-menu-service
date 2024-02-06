@@ -10,9 +10,11 @@ namespace Infrastructure.Database
         public MenuServiceDatabaseContext(DbContextOptions<MenuServiceDatabaseContext> options)
             : base(options) => this.Database.EnsureCreated();
 
-        public DbSet<MenuItem> Menu => this.Set<MenuItem>();
+        public DbSet<MenuItem> MenuItems => this.Set<MenuItem>();
 
         public DbSet<Category> Categories => this.Set<Category>();
+
+        public DbSet<CloudFile> CloudFiles => this.Set<CloudFile>();
 
         public DbSet<MenuItemCategory> MenuItemCategories => this.Set<MenuItemCategory>();
 

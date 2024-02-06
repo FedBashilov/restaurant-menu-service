@@ -2,18 +2,18 @@
 
 namespace CloudStorage.Service.Exceptions
 {
-    public class UploadFileException : Exception
+    public class RemoveFileFailedException : Exception
     {
-        public UploadFileException()
+        public RemoveFileFailedException()
         {
         }
 
-        public UploadFileException(string message)
+        public RemoveFileFailedException(string message)
             : base(message)
         {
         }
 
-        public UploadFileException(string message, Exception inner)
+        public RemoveFileFailedException(string message, Exception inner)
             : base(message, inner)
         {
         }

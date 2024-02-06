@@ -117,8 +117,41 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Category Not found" xml:space="preserve">
+    <value>Категория не найдена</value>
+  </data>
+  <data name="Failed to create Category" xml:space="preserve">
+    <value>Ошибка создания категории</value>
+  </data>
+  <data name="Failed to create Menu Item" xml:space="preserve">
+    <value>Ошибка создания позиции меню</value>
+  </data>
+  <data name="Failed to get Categories" xml:space="preserve">
+    <value>Ошибка получения категорий</value>
+  </data>
+  <data name="Failed to get Category" xml:space="preserve">
+    <value>Ошибка категории позиции меню</value>
+  </data>
+  <data name="Failed to get Menu Item" xml:space="preserve">
+    <value>Ошибка получения позиции меню</value>
+  </data>
+  <data name="Failed to get Menu Items" xml:space="preserve">
+    <value>Ошибка получения меню</value>
+  </data>
+  <data name="Failed to update Category" xml:space="preserve">
+    <value>Ошибка обновления категории</value>
+  </data>
+  <data name="Failed to update Menu Item" xml:space="preserve">
+    <value>Ошибка обновления позиции меню</value>
+  </data>
+  <data name="Invalid Menu Item Category" xml:space="preserve">
+    <value>Неверная категория позиции меню</value>
+  </data>
   <data name="Invalid request body" xml:space="preserve">
     <value>Некорректное тело запроса</value>
+  </data>
+  <data name="Menu Item Not found" xml:space="preserve">
+    <value>Позиция меню не найдена</value>
   </data>
   <data name="Name is required" xml:space="preserve">
     <value>Название обязательно</value>
